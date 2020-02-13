@@ -1,6 +1,6 @@
 %{
     #include <iostream>
-    #include <string>
+    #include <string.h>
     #include <stack>
     #include <map>
     #include <cstdio>

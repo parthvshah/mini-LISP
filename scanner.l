@@ -7,7 +7,7 @@
     int scope_var;
     int table_pointer;
     int line_number;
-    char* ERROR_TOKEN;
+    char* ERROR_TOKEN = "Error_Token";
 	void insert(char *id);
 	void display();
 %}
@@ -29,6 +29,7 @@ bool-val   T|F
 ">"                         { return(yytext[0]); }
 "<"                         { return(yytext[0]); }
 "="                         { return(yytext[0]); }
+"'"                         { return(yytext[0]); }
 "("                         { scope_var++ ; return(yytext[0]); }
 ")"                         { scope_var-- ; return(yytext[0]); }
 "mod"                       { return(_mod); }
@@ -48,7 +49,7 @@ bool-val   T|F
 \"({letter}|{digit})*\"     { return(_str); }
 {id}                        { printf("%s\n", yytext); insert(yytext); return(_id); }
 "#".*                       { ; }
-.                           { return yytext[0]; }
+.                           { printf("%s\n", yytext); insert(ERROR_TOKEN); }
 %%
 
 struct row

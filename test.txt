@@ -23,6 +23,7 @@
     (print 2)
     (print 4)
 )
+sdas,mdnas,
 (loop while (< x1 3)
     (if (< 2 34)
         (if (< 2 34)(setq x2 3)(setq x3 6))
