@@ -1,25 +1,18 @@
-FUN_STMTS       : FUN_STMT FUN_STMTS
-                | 
+
+LOOPFOR_EXP     : '(' _loopfor _id _in LIST STMTS ')'
+                | '(' _loopfor _id _from _number to _number STMTS ')'
+                | '(' _loopfor _id _from _number to _id STMTS ')'
+                | '(' _loopfor _id _from _id to _number STMTS ')'
+                | '(' _loopfor _id _from _id to _id STMTS ')'
                 ;
-FUN_STMT        : EXP | SET_STMT;
-FUN_EXP         : '(' _fun FUN_ID FUN_BODY ')'
+LOOPWHILE_EXP   : '(' _loopwhile STMTS ')'
                 ;
-        FUN_ID  : '(' VARIABLES ')'
+LIST            : '`(' LISTELEM_STR ')'
+                | '(' LISTELEM_NUM ')'
                 ;
-        FUN_BODY: FUN_STMTS
+LISTELEM_NUM    : _number LISTELEM_NUM
+                |
                 ;
-        FUN_CALL: '(' FUN_EXP PARAMS ')'
-                | '(' FUN_NAME PARAMS ')'
-                ;
-        FUN_NAME: VARIABLE 
-                ;
-        PARAM   : EXP 
-                ;
-        PARAMS : PARAM PARAMS
-                | 
-                ;
-        LAST_EXP: EXP 
-                ;
-        VARIABLES: VARIABLE VARIABLES
-                | 
+LISTELEM_STR    : _str LISTELEM_STR
+                |
                 ;

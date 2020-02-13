@@ -13,7 +13,6 @@
     int intVal;
     bool boolVal;
     char* id;
-    // ASTNode *node;
 }
 
 %type<node> PROGRAM 
@@ -27,8 +26,8 @@
 
 %token<intVal> _number
 %token<boolVal> _bool_val
-%token<id> _id
-%token _print _setq _if
+%token<id> _id _str
+%token _print _setq _if _loopfor _loopwhile _do _in _from _to
 
 %left '>' '<' '='
 %left '+' '-' 
@@ -45,6 +44,8 @@ STMTS           : STMT STMTS
 STMT            : EXP {printf("EXP");}
                 | SET_STMT {printf("SET_STMT");}
                 | PRINT_STMT {printf("PRINT_STMT");}
+                | LOOPFOR_EXP {printf("LOOPFOR_STMT");}
+                | LOOPWHILE_EXP {printf("LOOPWHILE_STMT");}
                 ;
 
 PRINT_STMT      : '(' _print EXP ')' 
@@ -81,11 +82,28 @@ SET_STMT        : '(' _setq VARIABLE EXP ')'
 
 IF_EXP          : '(' _if TEST_EXP THAN_EXP ELSE_EXP ')'
                 ;
-        TEST_EXP: EXP 
+        TEST_EXP: STMT 
                 ;
-        THAN_EXP: EXP 
+        THAN_EXP: STMT 
                 ;
-        ELSE_EXP: EXP 
+        ELSE_EXP: STMT 
+                ;
+LOOPFOR_EXP     : '(' _loopfor _id _in LIST STMTS ')'
+                | '(' _loopfor _id _from _number _to _number STMTS ')'
+                | '(' _loopfor _id _from _number _to _id STMTS ')'
+                | '(' _loopfor _id _from _id _to _number STMTS ')'
+                | '(' _loopfor _id _from _id _to _id STMTS ')'
+                ;
+LOOPWHILE_EXP   : '(' _loopwhile TEST_EXP STMTS ')'
+                ;
+LIST            : '`' '(' LISTELEM_STR ')'
+                | '(' LISTELEM_NUM ')'
+                ;
+LISTELEM_NUM    : _number LISTELEM_NUM
+                |
+                ;
+LISTELEM_STR    : _str LISTELEM_STR
+                |
                 ;
 %%
 
