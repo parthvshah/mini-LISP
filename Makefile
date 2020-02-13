@@ -13,8 +13,6 @@ lex.yy.o: lex.yy.cc parser.tab.hh ASTTree.hh
 	$(CC) -c -g -I.. lex.yy.cc
 lex.yy.cc: scanner.l
 	$(LEX) -o lex.yy.cc scanner.l
-ASTTree.o: ASTTree.cc
-	$(CC) -c ASTTree.cc
 
 clear:
-	rm $(OBJECT) lex.yy.* parser.tab.* ASTTree.o
+	rm $(OBJECT) lex.yy.* parser.tab.* 

@@ -1,0 +1,25 @@
+FUN_STMTS       : FUN_STMT FUN_STMTS
+                | 
+                ;
+FUN_STMT        : EXP | SET_STMT;
+FUN_EXP         : '(' _fun FUN_ID FUN_BODY ')'
+                ;
+        FUN_ID  : '(' VARIABLES ')'
+                ;
+        FUN_BODY: FUN_STMTS
+                ;
+        FUN_CALL: '(' FUN_EXP PARAMS ')'
+                | '(' FUN_NAME PARAMS ')'
+                ;
+        FUN_NAME: VARIABLE 
+                ;
+        PARAM   : EXP 
+                ;
+        PARAMS : PARAM PARAMS
+                | 
+                ;
+        LAST_EXP: EXP 
+                ;
+        VARIABLES: VARIABLE VARIABLES
+                | 
+                ;
