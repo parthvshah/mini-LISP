@@ -1,5 +1,5 @@
-(print-num 1)
-(print-num 2)
-(print-num 3)
-(print-num 4)
+(print 1)
+(print 2)
+(print 3)
+(print 4)
 

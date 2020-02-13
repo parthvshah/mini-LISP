@@ -1,4 +1,4 @@
-(print-num (if #t 1 2))
+(print (if T 1 2))
 
-(print-num (if #f 1 2))
+(print (if F 1 2))
 

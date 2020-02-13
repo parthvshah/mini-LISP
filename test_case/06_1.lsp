@@ -1,8 +1,8 @@
-(define x 1)
+(setq x 1)
 
-(print-num x)
+(print x)
 
-(define y (+ 1 2 3))
+(setq y (+ 1 2 3))
 
-(print-num y)
+(print y)
 

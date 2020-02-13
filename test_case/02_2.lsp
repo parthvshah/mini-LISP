@@ -1,4 +1,4 @@
-(print-num 0)
-(print-num -123)
-(print-num 456)
+(print 0)
+(print -123)
+(print 456)
 

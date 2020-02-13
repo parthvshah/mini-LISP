@@ -1,12 +1,12 @@
-(print-bool #t)
-(print-bool #f)
+(print T)
+(print F)
 
-(print-bool (and #t #f))
-(print-bool (and #t #t))
+(print (and T F))
+(print (and T T))
 
-(print-bool (or #t #f))
-(print-bool (or #f #f))
+(print (or T F))
+(print (or F F))
 
-(print-bool (not #t))
-(print-bool (not #f))
+(print (not T))
+(print (not F))
 

@@ -1,5 +1,5 @@
-(print-bool (or #t #t #f))
-(print-bool (or #f (and #f #t) (not #f)))
-(print-bool (and #t (not #f) (or #f #t) (and #t (not #t))))
+(print (or T T F))
+(print (or F (and F T) (not F)))
+(print (and T (not F) (or F T) (and T (not T))))
 
 
