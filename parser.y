@@ -8,6 +8,10 @@
         extern int yylex();
         void yyerror(const char *message);
     }
+    extern int scope_var;
+    extern int table_pointer;
+    extern char* ERROR_TOKEN;
+    extern void display();
 %}
 %union {
     int intVal;
@@ -112,6 +116,8 @@ void yyerror(const char *message) {
 }
 
 int main(int argc, char *argv[]) {
+    scope_var = 0;
+    table_pointer = 0;
     if(yyparse()==1)
 	{
 		printf("\nParsing failed\n");
@@ -120,5 +126,6 @@ int main(int argc, char *argv[]) {
 	{
 		printf("\nParsing completed successfully\n");
 	}
+    display();
     return(0);
 }
