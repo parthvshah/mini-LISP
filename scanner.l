@@ -6,8 +6,9 @@
     }
     int scope_var;
     int table_pointer;
+    int line_number;
     char* ERROR_TOKEN;
-	void insert(char *id, int line_no, int scope);
+	void insert(char *id);
 	void display();
 %}
 separator  [ \t\n\r]
@@ -19,6 +20,7 @@ bool-val   T|F
 
 %%
 <<EOF>>                     { return 0; }
+"\n"                        { line_number++; }
 {separator}                 { ; }
 "+"                         { return(yytext[0]); }
 "-"                         { return(yytext[0]); }
@@ -44,7 +46,8 @@ bool-val   T|F
 {number}                    { sscanf(yytext, "%d", &yylval.intVal); return(_number); }
 {bool-val}                  { if(yytext[0] == 'T') yylval.boolVal = true; else yylval.boolVal = false; return(_bool_val); }
 \"({letter}|{digit})*\"     { return(_str); }
-{id}                        { printf("%s\n", yytext); insert(yytext, yylineno, scope_var-1); return(_id); }
+{id}                        { printf("%s\n", yytext); insert(yytext); return(_id); }
+"#".*                       { ; }
 .                           { return yytext[0]; }
 %%
 
@@ -57,11 +60,11 @@ struct row
 struct row symtab[100];
 // increment table_pointer after every insertion
 //insert into syntab[table_pointer]
-void insert(char *id, int line_no, int scope)
+void insert(char *id)
 {
     strcpy(symtab[table_pointer].id,id);
-    symtab[table_pointer].line_no = line_no;
-    symtab[table_pointer].scope = scope;
+    symtab[table_pointer].line_no = line_number;
+    symtab[table_pointer].scope = scope_var-1;
     table_pointer++;
 }
 void display()

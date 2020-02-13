@@ -10,6 +10,7 @@
     }
     extern int scope_var;
     extern int table_pointer;
+    extern int line_number;
     extern char* ERROR_TOKEN;
     extern void display();
 %}
@@ -118,6 +119,7 @@ void yyerror(const char *message) {
 int main(int argc, char *argv[]) {
     scope_var = 0;
     table_pointer = 0;
+    line_number = 1;
     if(yyparse()==1)
 	{
 		printf("\nParsing failed\n");
