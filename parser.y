@@ -96,7 +96,7 @@ LOOPFOR_EXP     : '(' _loopfor _id _in LIST STMTS ')'
                 ;
 LOOPWHILE_EXP   : '(' _loopwhile TEST_EXP STMTS ')'
                 ;
-LIST            : '`' '(' LISTELEM_STR ')'
+LIST            : '\'' '(' LISTELEM_STR ')'
                 | '(' LISTELEM_NUM ')'
                 ;
 LISTELEM_NUM    : _number LISTELEM_NUM
