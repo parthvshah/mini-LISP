@@ -22,8 +22,7 @@
 %type<node> NUM_OP LOGICAL_OP 
 %type<node> PLUS MINUS MULTIPLY DIVIDE MODULES GREATER SMALLER EQUAL
 %type<node> AND_OP OR_OP NOT_OP
-%type<node> VARIABLE VARIABLES
-%type<node> PARAM PARAMS
+%type<node> VARIABLE
 %type<node> IF_EXP TEST_EXP THAN_EXP ELSE_EXP
 
 %token<intVal> _number
