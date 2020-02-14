@@ -47,7 +47,18 @@ bool-val   T|F
 {number}                    { sscanf(yytext, "%d", &yylval.intVal); return(_number); }
 {bool-val}                  { if(yytext[0] == 'T') yylval.boolVal = true; else yylval.boolVal = false; return(_bool_val); }
 \"({letter}|{digit})*\"     { return(_str); }
-{id}                        { printf("%s\n", yytext); insert(yytext); return(_id); }
+{id}                        { 
+                                printf("%s\n", yytext); 
+                                if(scope_var > 0)
+                                {
+                                    insert(yytext); 
+                                    return(_id);
+                                }
+                                else
+                                {
+                                    insert(ERROR_TOKEN);
+                                }
+                            }
 "#".*                       { ; }
 .                           { printf("%s\n", yytext); insert(ERROR_TOKEN); }
 %%

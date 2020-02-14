@@ -23,9 +23,11 @@
     (print 2)
     (print 4)
 )
-sdas,mdnas,
+4sdasmdnasnh3f
+dasmdnasnh3f
 (loop while (< x1 3)
     (if (< 2 34)
+        #adkfjhfsjdkj
         (if (< 2 34)(setq x2 3)(setq x3 6))
         (setq x4 6))
     (print 4)
