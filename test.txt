@@ -1,7 +1,7 @@
 (print T)
 (print T)(print 3)
 (print F)
-(setq g 34)
+(setq gAg 34)
 #(setsd,asd,ansd,mans,dma,=sdnamdsnmndasmq g 34)
 (< g 34)
 (if (< 2 34)(setq k 3)(setq k 6))
