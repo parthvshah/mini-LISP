@@ -46,11 +46,11 @@ PROGRAM             : STMT STMTS
 STMTS               : STMT STMTS 
                     | 
                     ;
-STMT                : EXP {printf("EXP\n");}
-                    | SET_STMT {printf("SET_STMT\n");}
-                    | PRINT_STMT {printf("PRINT_STMT\n");}
-                    | LOOPFOR_EXP {printf("LOOPFOR_STMT\n");}
-                    | LOOPWHILE_EXP {printf("LOOPWHILE_STMT\n");}
+STMT                : EXP {printf("EXP");}
+                    | SET_STMT {printf("SET_STMT");}
+                    | PRINT_STMT {printf("PRINT_STMT");}
+                    | LOOPFOR_EXP {printf("LOOPFOR_STMT");}
+                    | LOOPWHILE_EXP {printf("LOOPWHILE_STMT");}
                     ;
     
 PRINT_STMT          : '(' _print EXP ')' 
@@ -58,9 +58,9 @@ PRINT_STMT          : '(' _print EXP ')'
 EXPS                : EXP EXPS 
                     | 
                     ;
-EXP                 : _bool_val {printf("BOOL\n");}
-                    | _number {printf("NUM\n");}
-                    | VARIABLE {printf("VAR\n");}
+EXP                 : _bool_val {printf("BOOL");}
+                    | _number {printf("NUM");}
+                    | VARIABLE {printf("VAR");}
                     | NUM_OP 
                     | LOGICAL_OP 
                     | IF_EXP
