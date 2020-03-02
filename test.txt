@@ -30,5 +30,5 @@ dasmdnasnh3f
         #adkfjhfsjdkj
         (if (< 2 34)(setq x2 3)(setq x3 6))
         (setq x4 6))
-    (print 4)
+    (print x)
 )

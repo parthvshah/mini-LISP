@@ -4,12 +4,18 @@
     extern "C" {
         int yylex();
     }
-    int scope_var;
     int table_pointer;
     int line_number;
+    int currHighest = 0;
+    int top = 0;
+    int my_stack[256];
+    int loop = 1;
     char* ERROR_TOKEN = "Error_Token";
 	void insert(char *id);
 	void display();
+    void push();
+    int pop();
+    int get_top();
 %}
 separator  [ \t\n\r]
 letter     [a-zA-Z]
@@ -30,16 +36,34 @@ bool-val   T|F
 "<"                         { return(yytext[0]); }
 "="                         { return(yytext[0]); }
 "'"                         { return(yytext[0]); }
-"("                         { scope_var++ ; return(yytext[0]); }
-")"                         { scope_var-- ; return(yytext[0]); }
+"("                         {   
+                                loop = 0;
+                                return(yytext[0]);
+                            }
+")"                         {
+                                int return_value;
+                                if(loop)
+                                {
+                                    return_value = pop();
+                                }   
+                                loop = 1;
+                                if(return_value == -1)
+                                {
+                                    insert(ERROR_TOKEN);
+                                }
+                                else
+                                {
+                                    return(yytext[0]);
+                                }
+                            }
 "mod"                       { return(_mod); }
 "and"                       { return(_and); }
 "or"                        { return(_or); }
 "not"                       { return(_not); }
 "setq"                      { return(_setq); }
-"if"                        { return(_if); }
-"loop for"                  { return(_loopfor); }
-"loop while"                { return(_loopwhile); }
+"if"                        { push() ; return(_if); }
+"loop for"                  { push() ; return(_loopfor); }
+"loop while"                { push() ; return(_loopwhile); }
 "in"                        { return(_in); }
 "to"                        { return(_to); }
 "from"                      { return(_from); }
@@ -49,7 +73,7 @@ bool-val   T|F
 \"({letter}|{digit})*\"     { return(_str); }
 {id}                        { 
                                 printf("%s\n", yytext); 
-                                if(scope_var > 0)
+                                if(loop == 0)
                                 {
                                     insert(yytext); 
                                     return(_id);
@@ -76,7 +100,7 @@ void insert(char *id)
 {
     strcpy(symtab[table_pointer].id,id);
     symtab[table_pointer].line_no = line_number;
-    symtab[table_pointer].scope = scope_var-1;
+    symtab[table_pointer].scope = get_top();
     table_pointer++;
 }
 void display()
@@ -89,6 +113,24 @@ void display()
         printf("\n");
     } 
     printf("\n\n");
+}
+
+void push()
+{
+    my_stack[++top] = ++currHighest;
+}   
+
+int pop()
+{
+    if(top == 0)
+        return -1;
+    top--;
+    return 0;
+}
+
+int get_top()
+{
+    return my_stack[top];
 }
 
 
