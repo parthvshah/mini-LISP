@@ -34,6 +34,6 @@ dasmdnasnh3f
     (setq my-num 2)
     (setq my-bool-t T)
     (setq my-bool-f F)
-    (setq my-str "PARTH is DUMB")
+    (setq my-str "PARTH IS DUMPED")
     (print x)
 )

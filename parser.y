@@ -61,6 +61,7 @@ EXPS                : EXP EXPS
                     ;
 EXP                 : _bool_val {printf("BOOL");}
                     | _number {printf("NUM");}
+                    | _str {printf("STR");}
                     | VARIABLE {printf("VAR");}
                     | NUM_OP 
                     | LOGICAL_OP 

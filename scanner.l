@@ -75,7 +75,7 @@ bool-val   T|F
 "print"                     { return(_print); }
 {number}                    { set_num(yytext) ; setting_value = 0 ; sscanf(yytext, "%d", &yylval.intVal); return(_number); }
 {bool-val}                  { set_bool(yytext) ; setting_value = 0 ; if(yytext[0] == 'T') yylval.boolVal = true; else yylval.boolVal = false; return(_bool_val); }
-\"({letter}|" "|{digit})*\" { set_str(yytext) ; setting_value = 0 ; return(_str); }
+\"({letter}|" "|{digit})*\"     { set_str(yytext) ; setting_value = 0 ; return(_str); }
 {id}                        { 
                                 setting_value = 0;
                                 printf("%s\n", yytext); 
