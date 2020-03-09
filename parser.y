@@ -11,6 +11,7 @@
     extern int table_pointer;
     extern int my_stack[];
     extern int line_number;
+    extern int setting_value;
     extern char* ERROR_TOKEN;
     extern void display();
 %}
@@ -118,6 +119,7 @@ void yyerror(const char *message) {
 
 int main(int argc, char *argv[]) {
     my_stack[0] = 0;
+    setting_value = 0;
     table_pointer = 0;
     line_number = 1;
     if(yyparse()==1)

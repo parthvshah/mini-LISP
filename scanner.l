@@ -6,6 +6,7 @@
     }
     int table_pointer;
     int line_number;
+    int setting_value;
     int currHighest = 0;
     int top = 0;
     int my_stack[256];
@@ -16,6 +17,9 @@
     void push();
     int pop();
     int get_top();
+    int set_num(char *value);
+    int set_bool(char *value);
+    int set_str(char *value);
 %}
 separator  [ \t\n\r]
 letter     [a-zA-Z]
@@ -37,6 +41,7 @@ bool-val   T|F
 "="                         { return(yytext[0]); }
 "'"                         { return(yytext[0]); }
 "("                         {   
+                                setting_value = 0 ;
                                 loop = 0;
                                 return(yytext[0]);
                             }
@@ -60,7 +65,7 @@ bool-val   T|F
 "and"                       { return(_and); }
 "or"                        { return(_or); }
 "not"                       { return(_not); }
-"setq"                      { return(_setq); }
+"setq"                      { setting_value = 1 ; return(_setq); }
 "if"                        { push() ; return(_if); }
 "loop for"                  { push() ; return(_loopfor); }
 "loop while"                { push() ; return(_loopwhile); }
@@ -68,10 +73,11 @@ bool-val   T|F
 "to"                        { return(_to); }
 "from"                      { return(_from); }
 "print"                     { return(_print); }
-{number}                    { sscanf(yytext, "%d", &yylval.intVal); return(_number); }
-{bool-val}                  { if(yytext[0] == 'T') yylval.boolVal = true; else yylval.boolVal = false; return(_bool_val); }
-\"({letter}|{digit})*\"     { return(_str); }
+{number}                    { set_num(yytext) ; setting_value = 0 ; sscanf(yytext, "%d", &yylval.intVal); return(_number); }
+{bool-val}                  { set_bool(yytext) ; setting_value = 0 ; if(yytext[0] == 'T') yylval.boolVal = true; else yylval.boolVal = false; return(_bool_val); }
+\"({letter}|" "|{digit})*\" { set_str(yytext) ; setting_value = 0 ; return(_str); }
 {id}                        { 
+                                setting_value = 0;
                                 printf("%s\n", yytext); 
                                 if(loop == 0)
                                 {
@@ -92,6 +98,11 @@ struct row
 	char id[100];
 	int line_no;
 	int scope;
+    int valid_value;
+    int num_value;
+    char bool_value;
+    char *str_value;
+    int type;
 };
 struct row symtab[100];
 // increment table_pointer after every insertion
@@ -101,8 +112,34 @@ void insert(char *id)
     strcpy(symtab[table_pointer].id,id);
     symtab[table_pointer].line_no = line_number;
     symtab[table_pointer].scope = get_top();
+    symtab[table_pointer].valid_value = 0;
+    symtab[table_pointer].type = 0;
     table_pointer++;
 }
+
+int set_num(char *value)
+{
+    symtab[table_pointer-1].valid_value = 1;
+    symtab[table_pointer-1].type = 1;
+    symtab[table_pointer-1].num_value = atoi(value);
+}
+
+int set_bool(char *value)
+{
+    symtab[table_pointer-1].valid_value = 1;
+    symtab[table_pointer-1].type = 2;
+    symtab[table_pointer-1].bool_value = value[0];
+}
+
+int set_str(char *value)
+{
+    symtab[table_pointer-1].valid_value = 1;
+    symtab[table_pointer-1].type = 3;
+    symtab[table_pointer-1].str_value = new char[strlen(value)+1];
+    strcpy(symtab[table_pointer-1].str_value, value);
+
+}
+
 void display()
 {
     for(int i=0 ; i<table_pointer ; i++)
@@ -110,6 +147,24 @@ void display()
         printf("Id    : %s\n", symtab[i].id);
         printf("line  : %d\n", symtab[i].line_no);
         printf("scope : %d\n", symtab[i].scope);
+        if(symtab[i].valid_value)
+        {
+            switch(symtab[i].type)
+            {
+                case 1: 
+                        printf("type : %s\n", "NUM");
+                        printf("value : %d\n", symtab[i].num_value);
+                        break;
+                case 2: 
+                        printf("type : %s\n", "BOOL");
+                        printf("value : %c\n", symtab[i].bool_value);
+                        break;
+                case 3: 
+                        printf("type : %s\n", "STRING");
+                        printf("value : %s\n", symtab[i].str_value);
+                        break;
+            }
+        }
         printf("\n");
     } 
     printf("\n\n");
