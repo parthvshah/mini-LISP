@@ -95,7 +95,7 @@ bool-val   T|F
 
 struct row
 {
-	char id[100];
+	char id[128];
 	int line_no;
 	int scope;
     int valid_value;
@@ -104,6 +104,7 @@ struct row
     char *str_value;
     int type;
 };
+
 struct row symtab[100];
 // increment table_pointer after every insertion
 //insert into syntab[table_pointer]

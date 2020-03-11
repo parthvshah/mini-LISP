@@ -14,6 +14,42 @@
     extern int setting_value;
     extern char* ERROR_TOKEN;
     extern void display();
+
+    typedef struct Node{
+        int number_of_children;
+		struct Node *child[10];
+        int type;
+        /*
+            0 - NULL value
+            1 - operator - for/while/if/+/-/*.....
+            2 - id
+            3 - number value
+            4 - bool value
+            5 - string value
+        */
+		char operator[16];
+		char id[100];
+		int num_value;
+        char bool_value;
+        char *str_value;
+	}Node;
+    Node *root;
+    Node *node_stack[1024];
+    int stack_top;
+
+	// typedef struct tree_stack{
+	// 	Node *node;
+	// 	struct tree_stack *next;
+	// }tree_stack;
+    // void create_node(char *token, int leaf);
+	// void push_tree(Node *newnode);
+	// Node *pop_tree();
+	// void preorder(Node* root);
+	// void printtree(Node* root);
+	// int getmaxlevel(Node *root);
+	// void printGivenLevel(Node* root, int level, int h);
+	// void get_levels(Node *root, int level);
+
 %}
 %union {
     int intVal;
@@ -47,11 +83,11 @@ PROGRAM             : STMT STMTS
 STMTS               : STMT STMTS 
                     | 
                     ;
-STMT                : EXP {printf("EXP");}
-                    | SET_STMT {printf("SET_STMT");}
-                    | PRINT_STMT {printf("PRINT_STMT");}
-                    | LOOPFOR_EXP {printf("LOOPFOR_STMT");}
-                    | LOOPWHILE_EXP {printf("LOOPWHILE_STMT");}
+STMT                : EXP 
+                    | SET_STMT 
+                    | PRINT_STMT 
+                    | LOOPFOR_EXP 
+                    | LOOPWHILE_EXP 
                     ;
     
 PRINT_STMT          : '(' _print EXP ')' 
@@ -59,27 +95,27 @@ PRINT_STMT          : '(' _print EXP ')'
 EXPS                : EXP EXPS 
                     | 
                     ;
-EXP                 : _bool_val {printf("BOOL");}
-                    | _number {printf("NUM");}
-                    | _str {printf("STR");}
-                    | VARIABLE {printf("VAR");}
+EXP                 : _bool_val 
+                    | _number 
+                    | _str 
+                    | VARIABLE 
                     | NUM_OP 
                     | LOGICAL_OP 
                     | IF_EXP
                     ;
 NUM_OP              : PLUS | MINUS | MULTIPLY | DIVIDE | MODULES | GREATER | SMALLER | EQUAL ;
-        PLUS        : '(' '+' EXP EXP EXPS ')';
+        PLUS        : '(' '+' EXP EXP ')';
         MINUS       : '(' '-' EXP EXP ')';
-        MULTIPLY    : '(' '*' EXP EXP EXPS ')';
+        MULTIPLY    : '(' '*' EXP EXP ')';
         DIVIDE      : '(' '/' EXP EXP ')';
         MODULES     : '(' _mod EXP EXP ')';
         GREATER     : '(' '>' EXP EXP ')';
         SMALLER     : '(' '<' EXP EXP ')';
-        EQUAL       : '(' '=' EXP EXP EXPS ')';
+        EQUAL       : '(' '=' EXP EXP ')';
     
 LOGICAL_OP          : AND_OP | OR_OP | NOT_OP ;
-        AND_OP      : '(' _and EXP EXP EXPS ')';
-        OR_OP       : '(' _or EXP EXP EXPS ')';
+        AND_OP      : '(' _and EXP EXP ')';
+        OR_OP       : '(' _or EXP EXP ')';
         NOT_OP      : '(' _not EXP ')';
     
 SET_STMT            : '(' _setq VARIABLE EXP ')' 
@@ -123,6 +159,7 @@ int main(int argc, char *argv[]) {
     setting_value = 0;
     table_pointer = 0;
     line_number = 1;
+    stack_top = -1;
     if(yyparse()==1)
 	{
 		printf("\nParsing failed\n");
@@ -134,3 +171,133 @@ int main(int argc, char *argv[]) {
     display();
     return(0);
 }
+
+// void create_node(char *token, int leaf) {
+// 	Node *l;
+// 	Node *r;
+// 	if(leaf==0) {
+
+// 		r = pop_tree();
+// 		l = pop_tree();  		//returns NULL if it doesnt exist
+// 	}
+// 	else if(leaf ==1) {
+// 		l = NULL;
+// 		r = NULL;
+// 	}
+// 	else {
+// 		l = pop_tree();
+// 		r = NULL;
+// 	}
+
+// 	Node *newnode = (Node*)malloc(sizeof(Node));
+// 	strcpy(newnode->token, token);
+// 	newnode->left = l;
+// 	newnode->right = r;
+// 	push_tree(newnode);
+// }
+
+
+// void push_tree(Node *newnode){
+// 	tree_stack *temp= (tree_stack*)malloc(sizeof(tree_stack));
+// 	temp->node = newnode;
+// 	temp->next = tree_top;
+// 	tree_top = temp;
+// }
+
+
+// Node* pop_tree(){
+// 	tree_stack *temp = tree_top;
+// 	tree_top = tree_top->next;
+// 	Node *retnode = temp->node;
+// 	if(temp != NULL)
+// 		free(temp);
+// 	return retnode;
+// }
+
+
+// void printtree(Node* root){
+//     int h = getmaxlevel(root)-1;
+//     int i;
+
+  
+// 	fprintf(fp_ast, "\n\nAbstract Syntax Tree\n\n");
+
+//     for (i=1; i<=h; i++){
+// 		fprintf(fp_ast, "\t");
+// 		for(int j=0;j<=h+1-i;j++){
+// 			fprintf(fp_ast, "      ");
+// 		}
+//         printGivenLevel(root, i,h);
+//         fprintf(fp_ast, "\n\n");
+//     }
+// }
+
+
+// int getmaxlevel(Node *root){
+// 	int count=0;
+// 	Node *temp= root;
+// 	while(temp->left!=NULL){
+// 		count++;
+// 		temp=temp->left;
+// 	}
+// 	return count*2;
+// }
+
+
+// void printGivenLevel(Node* root, int level, int h){
+//     if (root == NULL)
+//         return;
+//     if (level == 1){
+// 		for(int j=0; j<=h-1-level; j++){
+// 			fprintf(fp_ast, " ");
+// 		}
+// 	    fprintf(fp_ast, "%s ", root->token);
+// 	}
+//     else if (level > 1){
+//         printGivenLevel(root->left, level-1,h);
+// 		for(int j=0; j<=h-1-level; j++){
+// 			fprintf(fp_ast, " ");
+// 		}
+//         printGivenLevel(root->right, level-1,h);
+//     }
+// }
+
+
+// void preorder(Node * node){
+// 	if (node == NULL)
+// 		return;
+
+// 	if(node->left!=NULL && node->right!=NULL)
+// 		strcat(preBuf, "   ( ");
+// 	strcat(preBuf, node->token);
+// 	strcat(preBuf, "   ");
+
+// 	preorder(node-> left);
+
+	
+// 	if(node->right){
+// 		preorder(node-> right);
+// 	}
+	
+// 	if(node->left!=NULL && node->right!=NULL)
+// 		strcat(preBuf, ")   ");
+// 	// printf("\n");
+	
+// }
+
+// void get_levels(Node *root, int level){
+// 	root->level = level;
+// 	if(root->left == NULL && root->right == NULL){
+// 		return;
+// 	}
+// 	if(root->left == NULL){
+// 		get_levels(root->right, level+1);
+// 	}
+// 	else if(root->right == NULL){
+// 		get_levels(root->left, level+1);
+// 	}
+// 	else{
+// 		get_levels(root->left, level+1);
+// 		get_levels(root->right, level+1);
+// 	}
+// }
