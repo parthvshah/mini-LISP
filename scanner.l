@@ -17,9 +17,9 @@
     void push();
     int pop();
     int get_top();
-    int set_num(char *value);
-    int set_bool(char *value);
-    int set_str(char *value);
+    void set_num(char *value);
+    void set_bool(char *value);
+    void set_str(char *value);
 %}
 separator  [ \t\n\r]
 letter     [a-zA-Z]
@@ -78,7 +78,6 @@ bool-val   T|F
 \"({letter}|" "|{digit})*\"     { set_str(yytext) ; setting_value = 0 ; return(_str); }
 {id}                        { 
                                 setting_value = 0;
-                                printf("%s\n", yytext); 
                                 if(loop == 0)
                                 {
                                     insert(yytext); 
@@ -118,21 +117,21 @@ void insert(char *id)
     table_pointer++;
 }
 
-int set_num(char *value)
+void set_num(char *value)
 {
     symtab[table_pointer-1].valid_value = 1;
     symtab[table_pointer-1].type = 1;
     symtab[table_pointer-1].num_value = atoi(value);
 }
 
-int set_bool(char *value)
+void set_bool(char *value)
 {
     symtab[table_pointer-1].valid_value = 1;
     symtab[table_pointer-1].type = 2;
     symtab[table_pointer-1].bool_value = value[0];
 }
 
-int set_str(char *value)
+void set_str(char *value)
 {
     symtab[table_pointer-1].valid_value = 1;
     symtab[table_pointer-1].type = 3;

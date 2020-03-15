@@ -18,16 +18,16 @@
     typedef struct Node{
         int number_of_children;
 		struct Node *child[10];
+		char ope[16];
         int type;
         /*
             0 - NULL value
-            1 - operator - for/while/if/+/-/*.....
+            1 - operator - for/while/if/+/-....
             2 - id
             3 - number value
             4 - bool value
             5 - string value
         */
-		char operator[16];
 		char id[100];
 		int num_value;
         char bool_value;
@@ -59,7 +59,7 @@
 
 %type<node> PROGRAM 
 %type<node> STMT STMTS PRINT_STMT SET_STMT
-%type<node> EXP EXPS 
+%type<node> EXP  
 %type<node> NUM_OP LOGICAL_OP 
 %type<node> PLUS MINUS MULTIPLY DIVIDE MODULES GREATER SMALLER EQUAL
 %type<node> AND_OP OR_OP NOT_OP
@@ -92,9 +92,7 @@ STMT                : EXP
     
 PRINT_STMT          : '(' _print EXP ')' 
                     ;
-EXPS                : EXP EXPS 
-                    | 
-                    ;
+
 EXP                 : _bool_val 
                     | _number 
                     | _str 
@@ -162,13 +160,14 @@ int main(int argc, char *argv[]) {
     stack_top = -1;
     if(yyparse()==1)
 	{
-		printf("\nParsing failed\n");
+        display();
+		printf("Parsing failed\n");
 	}
 	else
 	{
-		printf("\nParsing completed successfully\n");
+        display();
+		printf("Parsing completed successfully\n");
 	}
-    display();
     return(0);
 }
 
