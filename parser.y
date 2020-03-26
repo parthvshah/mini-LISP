@@ -34,21 +34,6 @@
         char *str_value;
 	}Node;
     Node *root;
-    Node *node_stack[1024];
-    int stack_top;
-
-	// typedef struct tree_stack{
-	// 	Node *node;
-	// 	struct tree_stack *next;
-	// }tree_stack;
-    // void create_node(char *token, int leaf);
-	// void push_tree(Node *newnode);
-	// Node *pop_tree();
-	// void preorder(Node* root);
-	// void printtree(Node* root);
-	// int getmaxlevel(Node *root);
-	// void printGivenLevel(Node* root, int level, int h);
-	// void get_levels(Node *root, int level);
 
 %}
 %union {
@@ -79,9 +64,10 @@
 
 %%
 PROGRAM             : STMT STMTS 
+                    | STMT
                     ;
 STMTS               : STMT STMTS 
-                    | 
+                    | STMT
                     ;
 STMT                : EXP 
                     | SET_STMT 
@@ -141,10 +127,10 @@ LIST                : '\'' '(' LISTELEM_STR ')'
                     | '(' LISTELEM_NUM ')'
                     ;
 LISTELEM_NUM        : _number LISTELEM_NUM
-                    |
+                    | _number
                     ;
 LISTELEM_STR        : _str LISTELEM_STR
-                    |
+                    | _str
                     ;
 %%
 
@@ -171,132 +157,4 @@ int main(int argc, char *argv[]) {
     return(0);
 }
 
-// void create_node(char *token, int leaf) {
-// 	Node *l;
-// 	Node *r;
-// 	if(leaf==0) {
 
-// 		r = pop_tree();
-// 		l = pop_tree();  		//returns NULL if it doesnt exist
-// 	}
-// 	else if(leaf ==1) {
-// 		l = NULL;
-// 		r = NULL;
-// 	}
-// 	else {
-// 		l = pop_tree();
-// 		r = NULL;
-// 	}
-
-// 	Node *newnode = (Node*)malloc(sizeof(Node));
-// 	strcpy(newnode->token, token);
-// 	newnode->left = l;
-// 	newnode->right = r;
-// 	push_tree(newnode);
-// }
-
-
-// void push_tree(Node *newnode){
-// 	tree_stack *temp= (tree_stack*)malloc(sizeof(tree_stack));
-// 	temp->node = newnode;
-// 	temp->next = tree_top;
-// 	tree_top = temp;
-// }
-
-
-// Node* pop_tree(){
-// 	tree_stack *temp = tree_top;
-// 	tree_top = tree_top->next;
-// 	Node *retnode = temp->node;
-// 	if(temp != NULL)
-// 		free(temp);
-// 	return retnode;
-// }
-
-
-// void printtree(Node* root){
-//     int h = getmaxlevel(root)-1;
-//     int i;
-
-  
-// 	fprintf(fp_ast, "\n\nAbstract Syntax Tree\n\n");
-
-//     for (i=1; i<=h; i++){
-// 		fprintf(fp_ast, "\t");
-// 		for(int j=0;j<=h+1-i;j++){
-// 			fprintf(fp_ast, "      ");
-// 		}
-//         printGivenLevel(root, i,h);
-//         fprintf(fp_ast, "\n\n");
-//     }
-// }
-
-
-// int getmaxlevel(Node *root){
-// 	int count=0;
-// 	Node *temp= root;
-// 	while(temp->left!=NULL){
-// 		count++;
-// 		temp=temp->left;
-// 	}
-// 	return count*2;
-// }
-
-
-// void printGivenLevel(Node* root, int level, int h){
-//     if (root == NULL)
-//         return;
-//     if (level == 1){
-// 		for(int j=0; j<=h-1-level; j++){
-// 			fprintf(fp_ast, " ");
-// 		}
-// 	    fprintf(fp_ast, "%s ", root->token);
-// 	}
-//     else if (level > 1){
-//         printGivenLevel(root->left, level-1,h);
-// 		for(int j=0; j<=h-1-level; j++){
-// 			fprintf(fp_ast, " ");
-// 		}
-//         printGivenLevel(root->right, level-1,h);
-//     }
-// }
-
-
-// void preorder(Node * node){
-// 	if (node == NULL)
-// 		return;
-
-// 	if(node->left!=NULL && node->right!=NULL)
-// 		strcat(preBuf, "   ( ");
-// 	strcat(preBuf, node->token);
-// 	strcat(preBuf, "   ");
-
-// 	preorder(node-> left);
-
-	
-// 	if(node->right){
-// 		preorder(node-> right);
-// 	}
-	
-// 	if(node->left!=NULL && node->right!=NULL)
-// 		strcat(preBuf, ")   ");
-// 	// printf("\n");
-	
-// }
-
-// void get_levels(Node *root, int level){
-// 	root->level = level;
-// 	if(root->left == NULL && root->right == NULL){
-// 		return;
-// 	}
-// 	if(root->left == NULL){
-// 		get_levels(root->right, level+1);
-// 	}
-// 	else if(root->right == NULL){
-// 		get_levels(root->left, level+1);
-// 	}
-// 	else{
-// 		get_levels(root->left, level+1);
-// 		get_levels(root->right, level+1);
-// 	}
-// }
