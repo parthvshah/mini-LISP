@@ -20,21 +20,25 @@
     int intVal;
     bool boolVal;
     char* id;
-    Node *node;
+    char* str;
+    ASTNode *node;
 }
 
 %type <node> PROGRAM 
-%type <node> STMT STMTS PRINT_STMT SET_STMT
+%type <node> STMTS PRINT_STMT SET_STMT
 %type <node> EXP  
 %type <node> NUM_OP LOGICAL_OP 
 %type <node> PLUS MINUS MULTIPLY DIVIDE MODULES GREATER SMALLER EQUAL
 %type <node> AND_OP OR_OP NOT_OP
 %type <node> VARIABLE
 %type <node> IF_EXP FROM IN RANGE
+%type <node> NUM STR BOOL LISTELEM_NUM LISTELEM_STR LIST
+%type <node> LOOPFOR_EXP STMT LOOPWHILE_EXP
 
 %token<intVal> _number
 %token<boolVal> _bool_val
-%token<id> _id _str
+%token<id> _id
+%token<str> _str
 %token _print _setq _if _loopfor _loopwhile _do _in _from _to
 
 %left '>' '<' '='
@@ -45,220 +49,340 @@
 
 %%
 PROGRAM             : STMT STMTS                                    {
-                                                                        $$ = makeNode(2, "PROGRAM", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "PROGRAM");
+                                                                        $$ = makeNode2(temp, $1, $2);
                                                                     }
                     | STMT                                          {
-                                                                        $$ = makeNode(1, "PROGRAM", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "PROGRAM");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     ;
 STMTS               : STMT STMTS                                    {
-                                                                        $$ = makeNode(2, "STMTS" $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "STMTS");
+                                                                        $$ = makeNode2(temp, $1, $2);
                                                                     }
                     | STMT                                          {
-                                                                        $$ = makeNode(1, "STMTS" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "STMTS");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     ;
 STMT                : EXP                                           {
-                                                                        $$ = makeNode(1, "STMT" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "STMT");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | SET_STMT                                      {
-                                                                        $$ = makeNode(1, "STMT" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "STMT");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | PRINT_STMT                                    {
-                                                                        $$ = makeNode(1, "STMT" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "STMT");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | IF_EXP                                        {
-                                                                        $$ = makeNode(1, "EXP" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "STMT");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | LOOPFOR_EXP                                   {
-                                                                        $$ = makeNode(1, "STMT" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "STMT");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | LOOPWHILE_EXP                                 {
-                                                                        $$ = makeNode(1, "STMT" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "STMT");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     ;
 PRINT_STMT          : '(' _print EXP ')'                            {
-                                                                        $$ = makeNode(1, "PRINT_STMT" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "PRINT_STMT");
+                                                                        $$ = makeNode1(temp, $3);
                                                                     }
                     ;
 EXP                 : BOOL                                          {
-                                                                        $$ = makeNode(1, "EXP" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "EXP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | NUM                                           {
-                                                                        $$ = makeNode(1, "EXP" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "EXP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | STR                                           {
-                                                                        $$ = makeNode(1, "EXP" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "EXP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | VARIABLE                                      {
-                                                                        $$ = makeNode(1, "EXP" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "EXP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | NUM_OP                                        {
-                                                                        $$ = makeNode(1, "EXP" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "EXP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | LOGICAL_OP                                    {
-                                                                        $$ = makeNode(1, "EXP" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "EXP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     ;
 NUM_OP              : PLUS                                          {
-                                                                        $$ = makeNode(1,"NUM_OP", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "NUM_OP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | MINUS                                         {
-                                                                        $$ = makeNode(1,"NUM_OP", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "NUM_OP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | MULTIPLY                                      {
-                                                                        $$ = makeNode(1,"NUM_OP", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "NUM_OP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | DIVIDE                                        {
-                                                                        $$ = makeNode(1,"NUM_OP", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "NUM_OP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | MODULES                                       {
-                                                                        $$ = makeNode(1,"NUM_OP", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "NUM_OP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     ;
         PLUS        : '(' '+' EXP EXP ')'                           {
-                                                                        $$ = makeNode(2, "+", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "+");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         MINUS       : '(' '-' EXP EXP ')'                           {
-                                                                        $$ = makeNode(2, "-", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "-");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         MULTIPLY    : '(' '*' EXP EXP ')'                           {
-                                                                        $$ = makeNode(2, "*", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "*");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         DIVIDE      : '(' '/' EXP EXP ')'                           {
-                                                                        $$ = makeNode(2, "/", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "/");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         MODULES     : '(' _mod EXP EXP ')'                          {
-                                                                        $$ = makeNode(2, "%", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "%");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
 LOGICAL_OP          : AND_OP                                        {
-                                                                        $$ = makeNode(1, "LOGICAL_OP" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LOGICAL_OP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | OR_OP                                         {
-                                                                        $$ = makeNode(1, "LOGICAL_OP" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LOGICAL_OP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | NOT_OP                                        {
-                                                                        $$ = makeNode(1, "LOGICAL_OP" $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LOGICAL_OP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | GREATER                                       {
-                                                                        $$ = makeNode(1,"LOGICAL_OP", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LOGICAL_OP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | SMALLER                                       {
-                                                                        $$ = makeNode(1,"LOGICAL_OP", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LOGICAL_OP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     | EQUAL                                         {
-                                                                        $$ = makeNode(1,"LOGICAL_OP", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LOGICAL_OP");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     }
                     ;
         AND_OP      : '(' _and EXP EXP ')'                          {
-                                                                        $$ = makeNode(2, "AND", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "AND");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         OR_OP       : '(' _or EXP EXP ')'                           {
-                                                                        $$ = makeNode(2, "OR", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "OR");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         NOT_OP      : '(' _not EXP ')'                              {
-                                                                        $$ = makeNode(1, "NOT", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "NOT");
+                                                                        $$ = makeNode1(temp, $3);
                                                                     }
                     ;
         GREATER     : '(' '>' EXP EXP ')'                           {
-                                                                        $$ = makeNode(2, ">", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, ">");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         SMALLER     : '(' '<' EXP EXP ')'                           {
-                                                                        $$ = makeNode(2, "<", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "<");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         EQUAL       : '(' '=' EXP EXP ')'                           {
-                                                                        $$ = makeNode(2, "=", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "=");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
 SET_STMT            : '(' _setq VARIABLE EXP ')'                    {
-                                                                        $$ = makeNode(2, "SET_STMT", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "SET_STMT");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
     
 IF_EXP              : '(' _if EXP STMT STMT ')'                     {
-                                                                        $$ = makeNode(3, "IF_EXP", $1, $2, $3);
+                                                                        char *temp;
+                                                                        strcpy(temp, "IF_EXP");
+                                                                        $$ = makeNode3(temp, $3, $4, $5);
                                                                     }
                     ;
 LOOPFOR_EXP         : '(' _loopfor IN STMTS ')'                     {
-                                                                        $$ = makeNode(2, "LOOPFOR_EXP", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LOOPFOR_EXP");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     } 
                     | '(' _loopfor FROM  STMTS ')'                  {
-                                                                        $$ = makeNode(2, "LOOPFOR_EXP", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LOOPFOR_EXP");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     } 
                     ;                  
 FROM                : VARIABLE _from RANGE                          {
-                                                                        $$ = makeNode(2, "FROM", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "FROM");
+                                                                        $$ = makeNode2(temp, $1, $3);
                                                                     } 
                     ;   
 RANGE               : NUM _to NUM                                   {
-                                                                        $$ = makeNode(2, "RANGE", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "RANGE");
+                                                                        $$ = makeNode2(temp, $1, $3);
                                                                     } 
                     | NUM _to VARIABLE                              {
-                                                                        $$ = makeNode(2, "RANGE", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "RANGE");
+                                                                        $$ = makeNode2(temp, $1, $3);
                                                                     } 
                     | VARIABLE _to NUM                              {
-                                                                        $$ = makeNode(2, "RANGE", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "RANGE");
+                                                                        $$ = makeNode2(temp, $1, $3);
                                                                     } 
                     | VARIABLE _to VARIABLE                         {
-                                                                        $$ = makeNode(2, "RANGE", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "RANGE");
+                                                                        $$ = makeNode2(temp, $1, $3);
                                                                     } 
                     ;
 IN                  : VARIABLE _in LIST                             {
-                                                                        $$ = makeNode(2, "IN", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "IN");
+                                                                        $$ = makeNode2(temp, $1, $3);
                                                                     } 
                     ;                    
 LOOPWHILE_EXP       : '(' _loopwhile EXP STMTS ')'                  {
-                                                                        $$ = makeNode(2, "LOOPWHILE_EXP", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LOOPWHILE_EXP");
+                                                                        $$ = makeNode2(temp, $3, $4);
                                                                     } 
                     ;
 LIST                : '\'' '(' LISTELEM_STR ')'                     {
-                                                                        $$ = makeNode(1, "LIST", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LIST");
+                                                                        $$ = makeNode1(temp, $3);
                                                                     } 
                     | '(' LISTELEM_NUM ')'                          {
-                                                                        $$ = makeNode(1, "LIST", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LIST");
+                                                                        $$ = makeNode1(temp, $2);
                                                                     } 
                     ;
 LISTELEM_NUM        : NUM LISTELEM_NUM                              {
-                                                                        $$ = makeNode(2, "LISTELEM_NUM", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LISTELEM_NUM");
+                                                                        $$ = makeNode2(temp, $1, $2);
                                                                     } 
                     | NUM                                           {
-                                                                        $$ = makeNode(1, "LISTELEM_NUM", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LISTELEM_NUM");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     } 
                     ;
 LISTELEM_STR        : STR LISTELEM_STR                              {
-                                                                        $$ = makeNode(2, "LISTELEM_STR", $1, $2);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LISTELEM_STR");
+                                                                        $$ = makeNode2(temp, $1, $2);
                                                                     } 
                     | STR                                           {
-                                                                        $$ = makeNode(1, "LISTELEM_STR", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "LISTELEM_STR");
+                                                                        $$ = makeNode1(temp, $1);
                                                                     } 
                     ;
 VARIABLE            : _id                                           {
-                                                                        $1 = makeLeafNode(1, std::string($1))
-                                                                        $$ = makeNode(1, "VARIABLE", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "VARIABLE");
+                                                                        ASTNode *t = makeLeafNode_id($1);
+                                                                        $$ = makeNode1(temp, t);
                                                                     }
                     ;
 NUM                 : _number                                       {
-                                                                        $1 = makeLeafNode(1, $1)
-                                                                        $$ = makeNode(1, "NUM", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "NUM");
+                                                                        ASTNode *t = makeLeafNode_num($1);
+                                                                        $$ = makeNode1(temp, t);
                                                                     }
                     ;
 BOOL                : _bool_val                                     {
-                                                                        $1 = makeLeafNode(1, $1)
-                                                                        $$ = makeNode(1, "BOOL", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "BOOL");
+                                                                        ASTNode *t = makeLeafNode_bool($1);
+                                                                        $$ = makeNode1(temp, t);
                                                                     }
                     ;
 STR                 : _str                                          {
-                                                                        $1 = makeLeafNode(1, std::string($1))
-                                                                        $$ = makeNode(1, "STR", $1);
+                                                                        char *temp;
+                                                                        strcpy(temp, "STR");
+                                                                        ASTNode *t = makeLeafNode_str($1);
+                                                                        $$ = makeNode1(temp, t);
                                                                     }
                     ;
 %%

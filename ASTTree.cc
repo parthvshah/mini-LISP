@@ -2,45 +2,90 @@
 #include <stdlib.h>
 #include "ASTTree.hh"
 
-Node* makeLeafNode(int type, char *n)
+
+ASTNode* makeLeafNode_id(char *n)
 {
-    Node *new_node = new Node;
+    ASTNode *new_node = new ASTNode;
     new_node->number_of_children = 0;
-    new_node->type = type;
-    switch(type)
-    {
-        case 2: strcpy(new_node->id, n);
-                break;
-        case 3: new_node->num_value = atoi(n);
-                break;
-        case 4: new_node->bool_value = atoi(n);
-                break;
-        case 5: strcpy(new_node->str_value, n);
-                break;
-    }
+    new_node->type = 2;
+    strcpy(new_node->id, n);
+    new_node->child[2] = NULL;
+    new_node->child[1] = NULL;
+    new_node->child[0] = NULL;
+    return new_node;
+}
+ASTNode* makeLeafNode_num(int n)
+{
+    ASTNode *new_node = new ASTNode;
+    new_node->number_of_children = 0;
+    new_node->type = 3;
+    new_node->num_value = n;
+    new_node->child[2] = NULL;
+    new_node->child[1] = NULL;
+    new_node->child[0] = NULL;
+    return new_node;
+}
+ASTNode* makeLeafNode_bool(bool n)
+{
+    ASTNode *new_node = new ASTNode;
+    new_node->number_of_children = 0;
+    new_node->type = 4;
+    new_node->bool_value = n;
+    new_node->child[2] = NULL;
+    new_node->child[1] = NULL;
+    new_node->child[0] = NULL;
+    return new_node;
+}
+ASTNode* makeLeafNode_str(char *n)
+{
+    ASTNode *new_node = new ASTNode;
+    new_node->number_of_children = 0;
+    new_node->type = 5;
+    strcpy(new_node->str_value, n);
     new_node->child[2] = NULL;
     new_node->child[1] = NULL;
     new_node->child[0] = NULL;
     return new_node;
 }
 
-Node* makeNode(int number_of_children, char *value, Node *c1 = NULL, Node *c2 = NULL, Node *c3 = NULL)
+
+ASTNode* makeNode1(char *value, ASTNode *c1)
 {
-    Node *new_node = new Node;
-    new_node->number_of_children = number_of_children;
+    ASTNode *new_node = new ASTNode;
+    new_node->number_of_children = 1;
     new_node->type = 1;
     strcpy(new_node->ope, value);
     new_node->child[2] = NULL;
     new_node->child[1] = NULL;
     new_node->child[0] = NULL;
-    switch(number_of_children)
-    {
-        case 3:new_node->child[2] = c3;
-        case 2:new_node->child[1] = c2;
-        case 1:new_node->child[0] = c1;
-                break;
-        default: break;
-    }
+    new_node->child[0] = c1;
+    return new_node;
+}
+ASTNode* makeNode2(char *value, ASTNode *c1, ASTNode *c2)
+{
+    ASTNode *new_node = new ASTNode;
+    new_node->number_of_children = 2;
+    new_node->type = 1;
+    strcpy(new_node->ope, value);
+    new_node->child[2] = NULL;
+    new_node->child[1] = NULL;
+    new_node->child[0] = NULL;
+    new_node->child[0] = c1;
+    new_node->child[1] = c2;
+    return new_node;
+}
+ASTNode* makeNode3(char *value, ASTNode *c1, ASTNode *c2, ASTNode *c3)
+{
+    ASTNode *new_node = new ASTNode;
+    new_node->number_of_children = 3;
+    new_node->type = 1;
+    strcpy(new_node->ope, value);
+    new_node->child[2] = NULL;
+    new_node->child[1] = NULL;
+    new_node->child[0] = NULL;
+    new_node->child[0] = c1;
+    new_node->child[1] = c2;
+    new_node->child[2] = c3;
     return new_node;
 }
 
