@@ -12,7 +12,7 @@
     int top = 0;
     int my_stack[256];
     int loop = 1;
-    char* ERROR_TOKEN = "Error_Token";
+    char* ERROR_TOKEN;
 	void insert(char *id);
 	void display();
     void push();
