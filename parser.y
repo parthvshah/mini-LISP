@@ -71,6 +71,7 @@ STMTS               : STMT STMTS                                    {
                                                                     }
                     ;
 STMT                : EXP                                           {
+                                                                        printf("EXP");
                                                                         char *temp;
                                                                         strcpy(temp, "STMT");
                                                                         $$ = makeNode1(temp, $1);
@@ -396,7 +397,7 @@ int main(int argc, char *argv[]) {
     setting_value = 0;
     table_pointer = 0;
     line_number = 1;
-    strcpy(ERROR_TOKEN, "Error_Token");
+    printf("runnn\n");
     if(yyparse()==1)
 	{
         display();

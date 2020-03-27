@@ -1,7 +1,7 @@
 %{
     #include <string.h>
-    #include "y.tab.h"
     #include "ASTTree.hh"
+    #include "y.tab.h"
     extern "C" {
         int yylex();
     }
@@ -12,7 +12,7 @@
     int top = 0;
     int my_stack[256];
     int loop = 1;
-    char* ERROR_TOKEN;
+    char* ERROR_TOKEN = "Error_Token";
 	void insert(char *id);
 	void display();
     void push();
