@@ -1,6 +1,7 @@
 %{
     #include <string.h>
     #include "y.tab.h"
+    #include "ASTTree.hh"
     extern "C" {
         int yylex();
     }
@@ -20,6 +21,11 @@
     void set_num(char *value);
     void set_bool(char *value);
     void set_str(char *value);
+
+    char *last_id;
+    char *last_str;
+    char last_bool;
+    int last_num;
 %}
 separator  [ \t\n\r]
 letter     [a-zA-Z]
@@ -73,14 +79,15 @@ bool-val   T|F
 "to"                        { return(_to); }
 "from"                      { return(_from); }
 "print"                     { return(_print); }
-{number}                    { set_num(yytext) ; setting_value = 0 ; sscanf(yytext, "%d", &yylval.intVal); return(_number); }
-{bool-val}                  { set_bool(yytext) ; setting_value = 0 ; if(yytext[0] == 'T') yylval.boolVal = true; else yylval.boolVal = false; return(_bool_val); }
-\"({letter}|" "|{digit})*\"     { set_str(yytext) ; setting_value = 0 ; return(_str); }
+{number}                    { sscanf(yytext, "%d", &yylval.intVal) ; set_num(yytext) ; setting_value = 0 ; sscanf(yytext, "%d", &yylval.intVal); return(_number); }
+{bool-val}                  { set_bool(yytext) ; setting_value = 0 ;  if(yytext[0] == 'T') yylval.boolVal = true; else yylval.boolVal = false; return(_bool_val); }
+\"({letter}|" "|{digit})*\" { yylval.id = strdup(yytext) ; set_str(yytext) ; setting_value = 0 ;  return(_str); }
 {id}                        { 
                                 setting_value = 0;
                                 if(loop == 0)
                                 {
-                                    insert(yytext); 
+                                    yylval.id = strdup(yytext);
+                                    insert(yytext);
                                     return(_id);
                                 }
                                 else
