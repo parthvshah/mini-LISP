@@ -49,338 +49,338 @@
 
 %%
 PROGRAM             : STMT STMTS                                    {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "PROGRAM");
                                                                         $$ = makeNode2(temp, $1, $2);
                                                                     }
                     | STMT                                          {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "PROGRAM");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     ;
 STMTS               : STMT STMTS                                    {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "STMTS");
                                                                         $$ = makeNode2(temp, $1, $2);
                                                                     }
                     | STMT                                          {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "STMTS");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     ;
 STMT                : EXP                                           {
                                                                         printf("EXP");
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "STMT");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | SET_STMT                                      {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "STMT");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | PRINT_STMT                                    {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "STMT");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | IF_EXP                                        {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "STMT");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | LOOPFOR_EXP                                   {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "STMT");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | LOOPWHILE_EXP                                 {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "STMT");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     ;
 PRINT_STMT          : '(' _print EXP ')'                            {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "PRINT_STMT");
                                                                         $$ = makeNode1(temp, $3);
                                                                     }
                     ;
 EXP                 : BOOL                                          {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "EXP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | NUM                                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "EXP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | STR                                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "EXP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | VARIABLE                                      {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "EXP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | NUM_OP                                        {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "EXP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | LOGICAL_OP                                    {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "EXP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     ;
 NUM_OP              : PLUS                                          {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "NUM_OP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | MINUS                                         {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "NUM_OP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | MULTIPLY                                      {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "NUM_OP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | DIVIDE                                        {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "NUM_OP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | MODULES                                       {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "NUM_OP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     ;
         PLUS        : '(' '+' EXP EXP ')'                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "+");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         MINUS       : '(' '-' EXP EXP ')'                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "-");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         MULTIPLY    : '(' '*' EXP EXP ')'                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "*");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         DIVIDE      : '(' '/' EXP EXP ')'                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "/");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         MODULES     : '(' _mod EXP EXP ')'                          {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "%");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
 LOGICAL_OP          : AND_OP                                        {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LOGICAL_OP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | OR_OP                                         {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LOGICAL_OP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | NOT_OP                                        {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LOGICAL_OP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | GREATER                                       {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LOGICAL_OP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | SMALLER                                       {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LOGICAL_OP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     | EQUAL                                         {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LOGICAL_OP");
                                                                         $$ = makeNode1(temp, $1);
                                                                     }
                     ;
         AND_OP      : '(' _and EXP EXP ')'                          {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "AND");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         OR_OP       : '(' _or EXP EXP ')'                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "OR");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         NOT_OP      : '(' _not EXP ')'                              {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "NOT");
                                                                         $$ = makeNode1(temp, $3);
                                                                     }
                     ;
         GREATER     : '(' '>' EXP EXP ')'                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, ">");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         SMALLER     : '(' '<' EXP EXP ')'                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "<");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
         EQUAL       : '(' '=' EXP EXP ')'                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "=");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
 SET_STMT            : '(' _setq VARIABLE EXP ')'                    {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "SET_STMT");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     }
                     ;
     
 IF_EXP              : '(' _if EXP STMT STMT ')'                     {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "IF_EXP");
                                                                         $$ = makeNode3(temp, $3, $4, $5);
                                                                     }
                     ;
 LOOPFOR_EXP         : '(' _loopfor IN STMTS ')'                     {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LOOPFOR_EXP");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     } 
                     | '(' _loopfor FROM  STMTS ')'                  {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LOOPFOR_EXP");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     } 
                     ;                  
 FROM                : VARIABLE _from RANGE                          {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "FROM");
                                                                         $$ = makeNode2(temp, $1, $3);
                                                                     } 
                     ;   
 RANGE               : NUM _to NUM                                   {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "RANGE");
                                                                         $$ = makeNode2(temp, $1, $3);
                                                                     } 
                     | NUM _to VARIABLE                              {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "RANGE");
                                                                         $$ = makeNode2(temp, $1, $3);
                                                                     } 
                     | VARIABLE _to NUM                              {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "RANGE");
                                                                         $$ = makeNode2(temp, $1, $3);
                                                                     } 
                     | VARIABLE _to VARIABLE                         {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "RANGE");
                                                                         $$ = makeNode2(temp, $1, $3);
                                                                     } 
                     ;
 IN                  : VARIABLE _in LIST                             {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "IN");
                                                                         $$ = makeNode2(temp, $1, $3);
                                                                     } 
                     ;                    
 LOOPWHILE_EXP       : '(' _loopwhile EXP STMTS ')'                  {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LOOPWHILE_EXP");
                                                                         $$ = makeNode2(temp, $3, $4);
                                                                     } 
                     ;
 LIST                : '\'' '(' LISTELEM_STR ')'                     {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LIST");
                                                                         $$ = makeNode1(temp, $3);
                                                                     } 
                     | '(' LISTELEM_NUM ')'                          {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LIST");
                                                                         $$ = makeNode1(temp, $2);
                                                                     } 
                     ;
 LISTELEM_NUM        : NUM LISTELEM_NUM                              {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LISTELEM_NUM");
                                                                         $$ = makeNode2(temp, $1, $2);
                                                                     } 
                     | NUM                                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LISTELEM_NUM");
                                                                         $$ = makeNode1(temp, $1);
                                                                     } 
                     ;
 LISTELEM_STR        : STR LISTELEM_STR                              {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LISTELEM_STR");
                                                                         $$ = makeNode2(temp, $1, $2);
                                                                     } 
                     | STR                                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "LISTELEM_STR");
                                                                         $$ = makeNode1(temp, $1);
                                                                     } 
                     ;
 VARIABLE            : _id                                           {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "VARIABLE");
                                                                         ASTNode *t = makeLeafNode_id($1);
                                                                         $$ = makeNode1(temp, t);
                                                                     }
                     ;
 NUM                 : _number                                       {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "NUM");
                                                                         ASTNode *t = makeLeafNode_num($1);
                                                                         $$ = makeNode1(temp, t);
                                                                     }
                     ;
 BOOL                : _bool_val                                     {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "BOOL");
                                                                         ASTNode *t = makeLeafNode_bool($1);
                                                                         $$ = makeNode1(temp, t);
                                                                     }
                     ;
 STR                 : _str                                          {
-                                                                        char *temp;
+                                                                        char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "STR");
                                                                         ASTNode *t = makeLeafNode_str($1);
                                                                         $$ = makeNode1(temp, t);
@@ -397,6 +397,8 @@ int main(int argc, char *argv[]) {
     setting_value = 0;
     table_pointer = 0;
     line_number = 1;
+    ERROR_TOKEN = (char *)malloc(sizeof(char)*15);
+    strcpy(ERROR_TOKEN, "Error_Token");
     printf("runnn\n");
     if(yyparse()==1)
 	{
