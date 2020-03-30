@@ -8,6 +8,7 @@ ASTNode* makeLeafNode_id(char *n)
     ASTNode *new_node = (ASTNode *)malloc(sizeof(ASTNode));
     new_node->number_of_children = 0;
     new_node->type = 2;
+    new_node->id = (char *)malloc(sizeof(char)*100);
     strcpy(new_node->id, n);
     new_node->child[2] = NULL;
     new_node->child[1] = NULL;
@@ -41,6 +42,7 @@ ASTNode* makeLeafNode_str(char *n)
     ASTNode *new_node = (ASTNode *)malloc(sizeof(ASTNode));
     new_node->number_of_children = 0;
     new_node->type = 5;
+    new_node->str_value = (char *)malloc(sizeof(char)*100);
     strcpy(new_node->str_value, n);
     new_node->child[2] = NULL;
     new_node->child[1] = NULL;
@@ -54,6 +56,7 @@ ASTNode* makeNode1(char *value, ASTNode *c1)
     ASTNode *new_node = (ASTNode *)malloc(sizeof(ASTNode));
     new_node->number_of_children = 1;
     new_node->type = 1;
+    new_node->ope = (char *)malloc(sizeof(char)*15);
     strcpy(new_node->ope, value);
     new_node->child[2] = NULL;
     new_node->child[1] = NULL;
@@ -66,6 +69,7 @@ ASTNode* makeNode2(char *value, ASTNode *c1, ASTNode *c2)
     ASTNode *new_node = (ASTNode *)malloc(sizeof(ASTNode));
     new_node->number_of_children = 2;
     new_node->type = 1;
+    new_node->ope = (char *)malloc(sizeof(char)*15);
     strcpy(new_node->ope, value);
     new_node->child[2] = NULL;
     new_node->child[1] = NULL;
@@ -79,6 +83,7 @@ ASTNode* makeNode3(char *value, ASTNode *c1, ASTNode *c2, ASTNode *c3)
     ASTNode *new_node = (ASTNode *)malloc(sizeof(ASTNode));
     new_node->number_of_children = 3;
     new_node->type = 1;
+    new_node->ope = (char *)malloc(sizeof(char)*15);
     strcpy(new_node->ope, value);
     new_node->child[2] = NULL;
     new_node->child[1] = NULL;

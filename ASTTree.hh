@@ -14,8 +14,8 @@ class ASTNode{
         4 - bool value
         5 - string value
     */
-    char ope[16];
-    char id[100];
+    char *ope;
+    char *id;
     int num_value;
     bool bool_value;
     char *str_value;

@@ -52,6 +52,7 @@ bool-val   T|F
                                 return(yytext[0]);
                             }
 ")"                         {
+                                setting_value = 0 ;
                                 int return_value;
                                 if(loop)
                                 {
@@ -83,7 +84,6 @@ bool-val   T|F
 {bool-val}                  { yylval.id = strdup(yytext) ; set_bool(yytext) ; setting_value = 0 ; if(yytext[1] == 't') yylval.boolVal = true; else yylval.boolVal = false ; return(_bool_val); }
 \"({letter}|" "|{digit})*\" { yylval.str = strdup(yytext) ; set_str(yytext) ; setting_value = 0 ;  return(_str); }
 {id}                        { 
-                                setting_value = 0;
                                 if(loop == 0)
                                 {
                                     yylval.id = strdup(yytext);
@@ -126,24 +126,33 @@ void insert(char *id)
 
 void set_num(char *value)
 {
-    symtab[table_pointer-1].valid_value = 1;
-    symtab[table_pointer-1].type = 1;
-    symtab[table_pointer-1].num_value = atoi(value);
+    if(setting_value)
+    {
+        symtab[table_pointer-1].valid_value = 1;
+        symtab[table_pointer-1].type = 1;
+        symtab[table_pointer-1].num_value = atoi(value);
+    }
 }
 
 void set_bool(char *value)
 {
-    symtab[table_pointer-1].valid_value = 1;
-    symtab[table_pointer-1].type = 2;
-    symtab[table_pointer-1].bool_value = value[0];
+    if(setting_value)
+    {
+        symtab[table_pointer-1].valid_value = 1;
+        symtab[table_pointer-1].type = 2;
+        symtab[table_pointer-1].bool_value = value[0];
+    }
 }
 
 void set_str(char *value)
 {
-    symtab[table_pointer-1].valid_value = 1;
-    symtab[table_pointer-1].type = 3;
-    symtab[table_pointer-1].str_value = new char[strlen(value)+1];
-    strcpy(symtab[table_pointer-1].str_value, value);
+    if(setting_value)
+    {
+        symtab[table_pointer-1].valid_value = 1;
+        symtab[table_pointer-1].type = 3;
+        symtab[table_pointer-1].str_value = new char[strlen(value)+1];
+        strcpy(symtab[table_pointer-1].str_value, value);
+    }
 
 }
 

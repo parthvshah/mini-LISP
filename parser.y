@@ -71,7 +71,6 @@ STMTS               : STMT STMTS                                    {
                                                                     }
                     ;
 STMT                : EXP                                           {
-                                                                        printf("EXP");
                                                                         char *temp = (char *)malloc(sizeof(char)*15);
                                                                         strcpy(temp, "STMT");
                                                                         $$ = makeNode1(temp, $1);
@@ -399,7 +398,6 @@ int main(int argc, char *argv[]) {
     line_number = 1;
     ERROR_TOKEN = (char *)malloc(sizeof(char)*15);
     strcpy(ERROR_TOKEN, "Error_Token");
-    printf("runnn\n");
     if(yyparse()==1)
 	{
         display();
