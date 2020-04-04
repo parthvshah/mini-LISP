@@ -15,6 +15,10 @@
     extern int setting_value;
     extern char* ERROR_TOKEN;
     extern void display();
+
+    ASTNode *root;
+    int icg_line_number, icg_branch, icg_exit;
+
 %}
 %union {
     int intVal;
@@ -47,7 +51,13 @@
 %left _and _or _not
 %left '(' ')' 
 
+%start S
+
 %%
+S                   : PROGRAM                       {
+                                                        root = $1;
+                                                    }
+  	                ;
 PROGRAM             : STMT STMTS                    {
                                                         char *temp = (char *)malloc(sizeof(char)*15);
                                                         strcpy(temp, "PROGRAM");
@@ -398,6 +408,9 @@ int main(int argc, char *argv[]) {
     line_number = 1;
     ERROR_TOKEN = (char *)malloc(sizeof(char)*15);
     strcpy(ERROR_TOKEN, "Error_Token");
+    icg_line_number = 0;
+    icg_branch = 0;
+    icg_exit = 0;
     if(yyparse()==1)
 	{
         display();
@@ -407,6 +420,7 @@ int main(int argc, char *argv[]) {
 	{
         display();
 		printf("Parsing completed successfully\n");
+        printf("%s\n", root->ope);
 	}
     return(0);
 }
