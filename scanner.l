@@ -16,7 +16,7 @@
 	void insert(char *id);
 	void display();
     void push();
-    int pop();
+    void pop();
     int get_top();
     void set_num(char *value);
     void set_bool(char *value);
@@ -56,17 +56,10 @@ bool-val   T|F
                                 int return_value;
                                 if(loop)
                                 {
-                                    return_value = pop();
+                                    pop();
                                 }   
                                 loop = 1;
-                                if(return_value == -1)
-                                {
-                                    insert(ERROR_TOKEN);
-                                }
-                                else
-                                {
-                                    return(yytext[0]);
-                                }
+                                return(yytext[0]);
                             }
 "mod"                       { return(_mod); }
 "and"                       { return(_and); }
@@ -81,7 +74,7 @@ bool-val   T|F
 "from"                      { return(_from); }
 "print"                     { return(_print); }
 {number}                    { sscanf(yytext, "%d", &yylval.intVal) ; set_num(yytext) ; setting_value = 0 ; return(_number); }
-{bool-val}                  { yylval.id = strdup(yytext) ; set_bool(yytext) ; setting_value = 0 ; if(yytext[1] == 't') yylval.boolVal = true; else yylval.boolVal = false ; return(_bool_val); }
+{bool-val}                  { yylval.id = strdup(yytext) ; set_bool(yytext) ; setting_value = 0 ; if(yytext[0] == 'T') yylval.boolVal = true; else yylval.boolVal = false ; return(_bool_val); }
 \"({letter}|" "|{digit})*\" { yylval.str = strdup(yytext) ; set_str(yytext) ; setting_value = 0 ;  return(_str); }
 {id}                        { 
                                 if(loop == 0)
@@ -191,12 +184,11 @@ void push()
     my_stack[++top] = ++currHighest;
 }   
 
-int pop()
+void pop()
 {
     if(top == 0)
-        return -1;
+        return;
     top--;
-    return 0;
 }
 
 int get_top()
