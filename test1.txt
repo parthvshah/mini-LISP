@@ -6,3 +6,7 @@
     (setq x (+ x 1))
 )
 (print x)
+(loop for i from 2 to x 
+    (print i)
+    (setq k i)
+)

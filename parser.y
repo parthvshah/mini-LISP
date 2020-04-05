@@ -590,6 +590,55 @@ int generate_code(ASTNode *root)
                     fprintf(icg_file, " GOTO L%d\n", loop_branch);
                     fprintf(icg_file, "EXIT%d :\n", exit);
                 }
+                else if( strcmp(root->ope, "LOOPFOR_FROM") == 0)
+                {
+                    int start_temp_var = ++icg_temp;
+                    int end_temp_var = ++icg_temp;
+                    int start_num = generate_code(root->child[0]->child[1]->child[0]);
+                    fprintf(icg_file, "t%d = ", start_temp_var);
+                    if( start_num > 0)
+                    {
+                        fprintf(icg_file, "t%d", start_num);
+                    }
+                    else
+                    {
+                        print_code(root->child[0]->child[1]->child[0]);
+                    }
+                    fprintf(icg_file, "\n");
+                    int end_num = generate_code(root->child[0]->child[1]->child[1]);
+                    fprintf(icg_file, "t%d = ", end_temp_var);
+                    if( end_num > 0)
+                    {
+                        fprintf(icg_file, "t%d", end_num);
+                    }
+                    else
+                    {
+                        print_code(root->child[0]->child[1]->child[1]);
+                    }
+                    fprintf(icg_file, "\n");
+                    print_code(root->child[0]->child[0]);
+                    fprintf(icg_file, " = t%d\n", start_temp_var);
+                    int loop_branch = ++icg_branch;
+                    int statement_branch = ++icg_branch;
+                    int exit = ++icg_exit;
+                    fprintf(icg_file, "L%d :\n", loop_branch);
+                    fprintf(icg_file, "if ");
+                    print_code(root->child[0]->child[0]);
+                    fprintf(icg_file, " < t%d\n", end_temp_var);
+                    fprintf(icg_file, "GOTO L%d\n", statement_branch);
+                    fprintf(icg_file, "GOTO EXIT%d\n", exit);
+                    fprintf(icg_file, "L%d :\n", statement_branch);
+                    generate_code(root->child[1]);
+                    print_code(root->child[0]->child[0]);
+                    fprintf(icg_file, " = ");
+                    print_code(root->child[0]->child[0]);
+                    fprintf(icg_file, " + 1\n");
+                    fprintf(icg_file, "GOTO L%d\n", loop_branch);
+                    fprintf(icg_file, "EXIT%d :\n", exit);
+
+
+
+                }
                 else
                 {
                     int return_value = generate_code(root->child[0]);
