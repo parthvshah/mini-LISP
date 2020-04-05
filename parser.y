@@ -535,6 +535,31 @@ int generate_code(ASTNode *root)
                     }
                     fprintf(icg_file, "\n");
                 }
+                else if( strcmp(root->ope, "IF_EXP") == 0)
+                {
+                    int op1 = generate_code(root->child[0]);
+                    fprintf(icg_file, "if ");
+                    if( op1 > 0)
+                    {
+                        fprintf(icg_file, "t%d", op1);
+                    }
+                    else
+                    {
+                        print_code(root->child[1]);
+                    }
+                    fprintf(icg_file, "\n");
+                    int branch1 = ++icg_branch;
+                    int branch2 = ++icg_branch;
+                    int exit = ++icg_exit;
+                    fprintf(icg_file, " GOTO L%d\n", branch1);
+                    fprintf(icg_file, " GOTO L%d\n", branch2);
+                    fprintf(icg_file, "L%d :\n", branch1);
+                    generate_code(root->child[1]);
+                    fprintf(icg_file, " GOTO EXIT%d\n", exit);
+                    fprintf(icg_file, "L%d :\n", branch2);
+                    generate_code(root->child[2]);
+                    fprintf(icg_file, "EXIT%d :\n", exit);
+                }
                 else
                 {
                     int return_value = generate_code(root->child[0]);

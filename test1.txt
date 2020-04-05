@@ -1,0 +1,3 @@
+(setq x (not (+ 3 ( * 2 3 ) )))
+(if (< x 10) (if (< y 10)(setq k x)(setq k y)) (if (< y 10)(setq k y)(setq k x)))
+(print k)
