@@ -18,7 +18,8 @@
     FILE *icg_file;
     ASTNode *ast_root;
     int icg_line_number, icg_temp, icg_branch, icg_exit;
-    void generate_code(ASTNode *);
+    int generate_code(ASTNode *);
+    void print_code(ASTNode *);
 
 %}
 %union {
@@ -160,7 +161,6 @@ NUM_OP              : PLUS                          {
                                                         $$ = makeNode1(temp, $1);
                                                     }
                     | MULTIPLY                      {
-                                                        printf("%s", "Multi");
                                                         char *temp = (char *)malloc(sizeof(char)*15);
                                                         strcpy(temp, "NUM_OP");
                                                         $$ = makeNode1(temp, $1);
@@ -434,63 +434,153 @@ int main(int argc, char *argv[]) {
     return(0);
 }
 
-void generate_code(ASTNode *root)
+int generate_code(ASTNode *root)
 {
     switch(root->type)
     {
         case 1: if(strcmp(root->ope, "PRINT_STMT") == 0)
                 {
-                    fprintf(icg_file, "\n( print ");
-                    generate_code(root->child[0]);
-                    fprintf(icg_file, ")\n ");
+                    int op0 = generate_code(root->child[0]);
+                    fprintf(icg_file, "print ( ");
+                    if( op0 > 0)
+                    {
+                        fprintf(icg_file, "t%d", op0);
+                    }
+                    else
+                    {
+                        print_code(root->child[0]);
+                    }
+                    fprintf(icg_file, " )\n");
                 }
                 else if( strcmp(root->ope, "+") == 0 || strcmp(root->ope, "-") == 0 || strcmp(root->ope, "*") == 0 || strcmp(root->ope, "/") == 0 || strcmp(root->ope, "%") == 0)
                 {
-                    fprintf(icg_file, "( ");
-                    generate_code(root->child[0]);
+                    int tempvar = ++icg_temp;
+                    int op0 = generate_code(root->child[0]);
+                    int op1 = generate_code(root->child[1]);
+                    fprintf(icg_file, "t%d = ", tempvar);
+                    if( op0 > 0)
+                    {
+                        fprintf(icg_file, "t%d", op0);
+                    }
+                    else
+                    {
+                        print_code(root->child[0]);
+                    }
                     fprintf(icg_file, " %s ", root->ope);
-                    generate_code(root->child[1]);
-                    fprintf(icg_file, " )");
+                    if( op1 > 0)
+                    {
+                        fprintf(icg_file, "t%d", op1);
+                    }
+                    else
+                    {
+                        print_code(root->child[1]);
+                    }
+                    fprintf(icg_file, "\n");
+                    return tempvar;
                 }
                 else if( strcmp(root->ope, "<") == 0 || strcmp(root->ope, ">") == 0 || strcmp(root->ope, "=") == 0 || strcmp(root->ope, "AND") == 0 || strcmp(root->ope, "OR") == 0)
                 {
-                    fprintf(icg_file, "( ");
-                    generate_code(root->child[0]);
+                    int tempvar = ++icg_temp;
+                    int op0 = generate_code(root->child[0]);
+                    int op1 = generate_code(root->child[1]);
+                    fprintf(icg_file, "t%d = ", tempvar);
+                    if( op0 > 0)
+                    {
+                        fprintf(icg_file, "t%d", op0);
+                    }
+                    else
+                    {
+                        print_code(root->child[0]);
+                    }
                     fprintf(icg_file, " %s ", root->ope);
-                    generate_code(root->child[1]);
-                    fprintf(icg_file, " )");
+                    if( op1 > 0)
+                    {
+                        fprintf(icg_file, "t%d", op1);
+                    }
+                    else
+                    {
+                        print_code(root->child[1]);
+                    }
+                    fprintf(icg_file, "\n");
+                    return tempvar;
                 }
                 else if( strcmp(root->ope, "NOT") == 0)
                 {
-                    fprintf(icg_file, "!");
-                    generate_code(root->child[0]);
+                    int tempvar = ++icg_temp;
+                    int op0 = generate_code(root->child[0]);
+                    fprintf(icg_file, "t%d = ! ", tempvar);
+                    if( op0 > 0)
+                    {
+                        fprintf(icg_file, "t%d", op0);
+                    }
+                    else
+                    {
+                        print_code(root->child[0]);
+                    }
+                    fprintf(icg_file, "\n");
+                    return tempvar;
                 }
                 else if( strcmp(root->ope, "SET_STMT") == 0)
                 {
-                    fprintf(icg_file, "\n");
-                    generate_code(root->child[0]);
+                    int op1 = generate_code(root->child[1]);
+                    print_code(root->child[0]);
                     fprintf(icg_file, " = ");
-                    generate_code(root->child[1]);
+                    if( op1 > 0)
+                    {
+                        fprintf(icg_file, "t%d", op1);
+                    }
+                    else
+                    {
+                        print_code(root->child[1]);
+                    }
                     fprintf(icg_file, "\n");
                 }
                 else
                 {
-                    for(int i=0 ; i<root->number_of_children ; i++)
+                    int return_value = generate_code(root->child[0]);
+                    for(int i=1 ; i<root->number_of_children ; i++)
                     {
                         generate_code(root->child[i]);
                     }
+                    return return_value;
                 }
                 break;
         case 2:
+                break;
+        case 3:
+                break;
+        case 4:
+                break;
+        case 5:
+                break;
+    }
+    return 0;
+}
+
+void print_code(ASTNode *root)
+{
+    switch(root->type)
+    {
+        case 1: 
+                for(int i=0 ; i<root->number_of_children ; i++)
+                {
+                    print_code(root->child[i]);
+                }
+                break;
+        case 2:
+                // printf("%s", root->id);
                 fprintf(icg_file, "%s", root->id);
                 break;
         case 3:
+                // printf("%d", root->num_value);
                 fprintf(icg_file, "%d", root->num_value);
                 break;
         case 4:
+                // printf("%d", root->bool_value);
                 fprintf(icg_file, "%d", root->bool_value);
                 break;
         case 5:
+                // printf("%s", root->str_value);
                 fprintf(icg_file, "%s", root->str_value);
                 break;
     }

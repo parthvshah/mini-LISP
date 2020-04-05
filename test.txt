@@ -1,7 +1,7 @@
 (print T)
 (print T)(print 3)
 (print F)
-(setq gAg 34)
+(setq gAg (+ 3 2))
 (+ 3 2)
 (* 3 2)
 (- 3 2)
