@@ -1,33 +1,33 @@
-t3 = 2 * 3
-t2 = 3 + t3
-t1 = ! t2
-x = t1
-t4 = x < 10
-if t4
- GOTO L1
- GOTO L2
 L1 :
-t5 = y < 10
-if t5
+t1 = x1 < 3
+if t1
+ GOTO L2
+ GOTO EXIT1
+L2 :
+t2 = 2 < 34
+if t2
  GOTO L3
  GOTO L4
 L3 :
-k = x
- GOTO EXIT2
-L4 :
-k = y
-EXIT2 :
- GOTO EXIT1
-L2 :
-t6 = y < 10
-if t6
+t3 = 2 < 34
+if t3
  GOTO L5
  GOTO L6
 L5 :
-k = y
+x2 = 3
  GOTO EXIT3
 L6 :
-k = x
+x3 = 6
 EXIT3 :
+ GOTO EXIT2
+L4 :
+x4 = 6
+EXIT2 :
+print ( x )
+my-num = 2
+my-bool-t = 1
+my-bool-f = 0
+my-str = "PARTH SHAH"
+print ( x )
+ GOTO L1
 EXIT1 :
-print ( k )

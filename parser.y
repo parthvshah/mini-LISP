@@ -39,7 +39,7 @@
 %type <node> VARIABLE
 %type <node> IF_EXP FROM IN RANGE
 %type <node> NUM STR BOOL LISTELEM_NUM LISTELEM_STR LIST
-%type <node> LOOPFOR_EXP STMT LOOPWHILE_EXP
+%type <node> LOOPFOR_FROM LOOPFOR_IN STMT LOOPWHILE_EXP
 
 %token<intVal> _number
 %token<boolVal> _bool_val
@@ -102,7 +102,12 @@ STMT                : EXP                           {
                                                         strcpy(temp, "STMT");
                                                         $$ = makeNode1(temp, $1);
                                                     }
-                    | LOOPFOR_EXP                   {
+                    | LOOPFOR_FROM                  {
+                                                        char *temp = (char *)malloc(sizeof(char)*15);
+                                                        strcpy(temp, "STMT");
+                                                        $$ = makeNode1(temp, $1);
+                                                    }
+                    | LOOPFOR_IN                    {
                                                         char *temp = (char *)malloc(sizeof(char)*15);
                                                         strcpy(temp, "STMT");
                                                         $$ = makeNode1(temp, $1);
@@ -286,14 +291,15 @@ IF_EXP              : '(' _if EXP STMT STMT ')'     {
                                                         $$ = makeNode3(temp, $3, $4, $5);
                                                     }
                     ;
-LOOPFOR_EXP         : '(' _loopfor IN STMTS ')'     {
+LOOPFOR_IN      : '(' _loopfor IN STMTS ')'         {
                                                         char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "LOOPFOR_EXP");
+                                                        strcpy(temp, "LOOPFOR_IN");
                                                         $$ = makeNode2(temp, $3, $4);
                                                     } 
-                    | '(' _loopfor FROM  STMTS ')'  {
+                    ;
+LOOPFOR_FROM    : '(' _loopfor FROM  STMTS ')'      {
                                                         char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "LOOPFOR_EXP");
+                                                        strcpy(temp, "LOOPFOR_FROM");
                                                         $$ = makeNode2(temp, $3, $4);
                                                     } 
                     ;                  
@@ -558,6 +564,30 @@ int generate_code(ASTNode *root)
                     fprintf(icg_file, " GOTO EXIT%d\n", exit);
                     fprintf(icg_file, "L%d :\n", branch2);
                     generate_code(root->child[2]);
+                    fprintf(icg_file, "EXIT%d :\n", exit);
+                }
+                else if( strcmp(root->ope, "LOOPWHILE_EXP") == 0)
+                {
+                    int loop_branch = ++icg_branch;
+                    int exit = ++icg_exit;
+                    fprintf(icg_file, "L%d :\n", loop_branch);
+                    int op1 = generate_code(root->child[0]);
+                    fprintf(icg_file, "if ");
+                    if( op1 > 0)
+                    {
+                        fprintf(icg_file, "t%d", op1);
+                    }
+                    else
+                    {
+                        print_code(root->child[1]);
+                    }
+                    fprintf(icg_file, "\n");
+                    int statement_branch = ++icg_branch;
+                    fprintf(icg_file, " GOTO L%d\n", statement_branch);
+                    fprintf(icg_file, " GOTO EXIT%d\n", exit);
+                    fprintf(icg_file, "L%d :\n", statement_branch);
+                    generate_code(root->child[1]);
+                    fprintf(icg_file, " GOTO L%d\n", loop_branch);
                     fprintf(icg_file, "EXIT%d :\n", exit);
                 }
                 else
