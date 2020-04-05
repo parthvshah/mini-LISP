@@ -37,9 +37,9 @@
 %type <node> PLUS MINUS MULTIPLY DIVIDE MODULES GREATER SMALLER EQUAL
 %type <node> AND_OP OR_OP NOT_OP
 %type <node> VARIABLE
-%type <node> IF_EXP FROM IN RANGE
-%type <node> NUM STR BOOL LISTELEM_NUM LISTELEM_STR LIST
-%type <node> LOOPFOR_FROM LOOPFOR_IN STMT LOOPWHILE_EXP
+%type <node> IF_EXP FROM RANGE
+%type <node> NUM STR BOOL
+%type <node> LOOPFOR_FROM STMT LOOPWHILE_EXP
 
 %token<intVal> _number
 %token<boolVal> _bool_val
@@ -103,11 +103,6 @@ STMT                : EXP                           {
                                                         $$ = makeNode1(temp, $1);
                                                     }
                     | LOOPFOR_FROM                  {
-                                                        char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "STMT");
-                                                        $$ = makeNode1(temp, $1);
-                                                    }
-                    | LOOPFOR_IN                    {
                                                         char *temp = (char *)malloc(sizeof(char)*15);
                                                         strcpy(temp, "STMT");
                                                         $$ = makeNode1(temp, $1);
@@ -291,12 +286,6 @@ IF_EXP              : '(' _if EXP STMT STMT ')'     {
                                                         $$ = makeNode3(temp, $3, $4, $5);
                                                     }
                     ;
-LOOPFOR_IN      : '(' _loopfor IN STMTS ')'         {
-                                                        char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "LOOPFOR_IN");
-                                                        $$ = makeNode2(temp, $3, $4);
-                                                    } 
-                    ;
 LOOPFOR_FROM    : '(' _loopfor FROM  STMTS ')'      {
                                                         char *temp = (char *)malloc(sizeof(char)*15);
                                                         strcpy(temp, "LOOPFOR_FROM");
@@ -329,50 +318,11 @@ RANGE               : NUM _to NUM                   {
                                                         strcpy(temp, "RANGE");
                                                         $$ = makeNode2(temp, $1, $3);
                                                     } 
-                    ;
-IN                  : VARIABLE _in LIST             {
-                                                        char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "IN");
-                                                        $$ = makeNode2(temp, $1, $3);
-                                                    } 
-                    ;                    
+                    ;                   
 LOOPWHILE_EXP       : '(' _loopwhile EXP STMTS ')'  {
                                                         char *temp = (char *)malloc(sizeof(char)*15);
                                                         strcpy(temp, "LOOPWHILE_EXP");
                                                         $$ = makeNode2(temp, $3, $4);
-                                                    } 
-                    ;
-LIST                : '\'' '(' LISTELEM_STR ')'     {
-                                                        char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "LIST");
-                                                        $$ = makeNode1(temp, $3);
-                                                    } 
-                    | '(' LISTELEM_NUM ')'          {
-                                                        char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "LIST");
-                                                        $$ = makeNode1(temp, $2);
-                                                    } 
-                    ;
-LISTELEM_NUM        : NUM LISTELEM_NUM              {
-                                                        char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "LISTELEM_NUM");
-                                                        $$ = makeNode2(temp, $1, $2);
-                                                    } 
-                    | NUM                           {
-                                                        char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "LISTELEM_NUM");
-                                                        $$ = makeNode1(temp, $1);
-                                                    } 
-                    ;
-LISTELEM_STR        : STR LISTELEM_STR              {
-                                                        char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "LISTELEM_STR");
-                                                        $$ = makeNode2(temp, $1, $2);
-                                                    } 
-                    | STR                           {
-                                                        char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "LISTELEM_STR");
-                                                        $$ = makeNode1(temp, $1);
                                                     } 
                     ;
 VARIABLE            : _id                           {
@@ -423,12 +373,12 @@ int main(int argc, char *argv[]) {
 	icg_file = fopen("icg.txt", "w");
     if(yyparse()==1)
 	{
-        // display();
+        display();
 		printf("Parsing failed\n");
 	}
 	else
 	{
-        // display();
+        display();
 		printf("Parsing completed successfully\n");
         generate_code(ast_root);
 	}
@@ -442,221 +392,209 @@ int main(int argc, char *argv[]) {
 
 int generate_code(ASTNode *root)
 {
-    switch(root->type)
-    {
-        case 1: if(strcmp(root->ope, "PRINT_STMT") == 0)
-                {
-                    int op0 = generate_code(root->child[0]);
-                    fprintf(icg_file, "print ( ");
-                    if( op0 > 0)
-                    {
-                        fprintf(icg_file, "t%d", op0);
-                    }
-                    else
-                    {
-                        print_code(root->child[0]);
-                    }
-                    fprintf(icg_file, " )\n");
-                }
-                else if( strcmp(root->ope, "+") == 0 || strcmp(root->ope, "-") == 0 || strcmp(root->ope, "*") == 0 || strcmp(root->ope, "/") == 0 || strcmp(root->ope, "%") == 0)
-                {
-                    int tempvar = ++icg_temp;
-                    int op0 = generate_code(root->child[0]);
-                    int op1 = generate_code(root->child[1]);
-                    fprintf(icg_file, "t%d = ", tempvar);
-                    if( op0 > 0)
-                    {
-                        fprintf(icg_file, "t%d", op0);
-                    }
-                    else
-                    {
-                        print_code(root->child[0]);
-                    }
-                    fprintf(icg_file, " %s ", root->ope);
-                    if( op1 > 0)
-                    {
-                        fprintf(icg_file, "t%d", op1);
-                    }
-                    else
-                    {
-                        print_code(root->child[1]);
-                    }
-                    fprintf(icg_file, "\n");
-                    return tempvar;
-                }
-                else if( strcmp(root->ope, "<") == 0 || strcmp(root->ope, ">") == 0 || strcmp(root->ope, "=") == 0 || strcmp(root->ope, "AND") == 0 || strcmp(root->ope, "OR") == 0)
-                {
-                    int tempvar = ++icg_temp;
-                    int op0 = generate_code(root->child[0]);
-                    int op1 = generate_code(root->child[1]);
-                    fprintf(icg_file, "t%d = ", tempvar);
-                    if( op0 > 0)
-                    {
-                        fprintf(icg_file, "t%d", op0);
-                    }
-                    else
-                    {
-                        print_code(root->child[0]);
-                    }
-                    fprintf(icg_file, " %s ", root->ope);
-                    if( op1 > 0)
-                    {
-                        fprintf(icg_file, "t%d", op1);
-                    }
-                    else
-                    {
-                        print_code(root->child[1]);
-                    }
-                    fprintf(icg_file, "\n");
-                    return tempvar;
-                }
-                else if( strcmp(root->ope, "NOT") == 0)
-                {
-                    int tempvar = ++icg_temp;
-                    int op0 = generate_code(root->child[0]);
-                    fprintf(icg_file, "t%d = ! ", tempvar);
-                    if( op0 > 0)
-                    {
-                        fprintf(icg_file, "t%d", op0);
-                    }
-                    else
-                    {
-                        print_code(root->child[0]);
-                    }
-                    fprintf(icg_file, "\n");
-                    return tempvar;
-                }
-                else if( strcmp(root->ope, "SET_STMT") == 0)
-                {
-                    int op1 = generate_code(root->child[1]);
-                    print_code(root->child[0]);
-                    fprintf(icg_file, " = ");
-                    if( op1 > 0)
-                    {
-                        fprintf(icg_file, "t%d", op1);
-                    }
-                    else
-                    {
-                        print_code(root->child[1]);
-                    }
-                    fprintf(icg_file, "\n");
-                }
-                else if( strcmp(root->ope, "IF_EXP") == 0)
-                {
-                    int op1 = generate_code(root->child[0]);
-                    fprintf(icg_file, "if ");
-                    if( op1 > 0)
-                    {
-                        fprintf(icg_file, "t%d", op1);
-                    }
-                    else
-                    {
-                        print_code(root->child[1]);
-                    }
-                    fprintf(icg_file, "\n");
-                    int branch1 = ++icg_branch;
-                    int branch2 = ++icg_branch;
-                    int exit = ++icg_exit;
-                    fprintf(icg_file, " GOTO L%d\n", branch1);
-                    fprintf(icg_file, " GOTO L%d\n", branch2);
-                    fprintf(icg_file, "L%d :\n", branch1);
-                    generate_code(root->child[1]);
-                    fprintf(icg_file, " GOTO EXIT%d\n", exit);
-                    fprintf(icg_file, "L%d :\n", branch2);
-                    generate_code(root->child[2]);
-                    fprintf(icg_file, "EXIT%d :\n", exit);
-                }
-                else if( strcmp(root->ope, "LOOPWHILE_EXP") == 0)
-                {
-                    int loop_branch = ++icg_branch;
-                    int exit = ++icg_exit;
-                    fprintf(icg_file, "L%d :\n", loop_branch);
-                    int op1 = generate_code(root->child[0]);
-                    fprintf(icg_file, "if ");
-                    if( op1 > 0)
-                    {
-                        fprintf(icg_file, "t%d", op1);
-                    }
-                    else
-                    {
-                        print_code(root->child[1]);
-                    }
-                    fprintf(icg_file, "\n");
-                    int statement_branch = ++icg_branch;
-                    fprintf(icg_file, " GOTO L%d\n", statement_branch);
-                    fprintf(icg_file, " GOTO EXIT%d\n", exit);
-                    fprintf(icg_file, "L%d :\n", statement_branch);
-                    generate_code(root->child[1]);
-                    fprintf(icg_file, " GOTO L%d\n", loop_branch);
-                    fprintf(icg_file, "EXIT%d :\n", exit);
-                }
-                else if( strcmp(root->ope, "LOOPFOR_FROM") == 0)
-                {
-                    int start_temp_var = ++icg_temp;
-                    int end_temp_var = ++icg_temp;
-                    int start_num = generate_code(root->child[0]->child[1]->child[0]);
-                    fprintf(icg_file, "t%d = ", start_temp_var);
-                    if( start_num > 0)
-                    {
-                        fprintf(icg_file, "t%d", start_num);
-                    }
-                    else
-                    {
-                        print_code(root->child[0]->child[1]->child[0]);
-                    }
-                    fprintf(icg_file, "\n");
-                    int end_num = generate_code(root->child[0]->child[1]->child[1]);
-                    fprintf(icg_file, "t%d = ", end_temp_var);
-                    if( end_num > 0)
-                    {
-                        fprintf(icg_file, "t%d", end_num);
-                    }
-                    else
-                    {
-                        print_code(root->child[0]->child[1]->child[1]);
-                    }
-                    fprintf(icg_file, "\n");
-                    print_code(root->child[0]->child[0]);
-                    fprintf(icg_file, " = t%d\n", start_temp_var);
-                    int loop_branch = ++icg_branch;
-                    int statement_branch = ++icg_branch;
-                    int exit = ++icg_exit;
-                    fprintf(icg_file, "L%d :\n", loop_branch);
-                    fprintf(icg_file, "if ");
-                    print_code(root->child[0]->child[0]);
-                    fprintf(icg_file, " < t%d\n", end_temp_var);
-                    fprintf(icg_file, "GOTO L%d\n", statement_branch);
-                    fprintf(icg_file, "GOTO EXIT%d\n", exit);
-                    fprintf(icg_file, "L%d :\n", statement_branch);
-                    generate_code(root->child[1]);
-                    print_code(root->child[0]->child[0]);
-                    fprintf(icg_file, " = ");
-                    print_code(root->child[0]->child[0]);
-                    fprintf(icg_file, " + 1\n");
-                    fprintf(icg_file, "GOTO L%d\n", loop_branch);
-                    fprintf(icg_file, "EXIT%d :\n", exit);
-
-
-
-                }
-                else
-                {
-                    int return_value = generate_code(root->child[0]);
-                    for(int i=1 ; i<root->number_of_children ; i++)
-                    {
-                        generate_code(root->child[i]);
-                    }
-                    return return_value;
-                }
-                break;
-        case 2:
-                break;
-        case 3:
-                break;
-        case 4:
-                break;
-        case 5:
-                break;
+    if(root->type == 1)
+    {       
+        if(strcmp(root->ope, "PRINT_STMT") == 0)
+        {
+            int op0 = generate_code(root->child[0]);
+            fprintf(icg_file, "print ( ");
+            if( op0 > 0)
+            {
+                fprintf(icg_file, "t%d", op0);
+            }
+            else
+            {
+                print_code(root->child[0]);
+            }
+            fprintf(icg_file, " )\n");
+        }
+        else if( strcmp(root->ope, "+") == 0 || strcmp(root->ope, "-") == 0 || strcmp(root->ope, "*") == 0 || strcmp(root->ope, "/") == 0 || strcmp(root->ope, "%") == 0)
+        {
+            int tempvar = ++icg_temp;
+            int op0 = generate_code(root->child[0]);
+            int op1 = generate_code(root->child[1]);
+            fprintf(icg_file, "t%d = ", tempvar);
+            if( op0 > 0)
+            {
+                fprintf(icg_file, "t%d", op0);
+            }
+            else
+            {
+                print_code(root->child[0]);
+            }
+            fprintf(icg_file, " %s ", root->ope);
+            if( op1 > 0)
+            {
+                fprintf(icg_file, "t%d", op1);
+            }
+            else
+            {
+                print_code(root->child[1]);
+            }
+            fprintf(icg_file, "\n");
+            return tempvar;
+        }
+        else if( strcmp(root->ope, "<") == 0 || strcmp(root->ope, ">") == 0 || strcmp(root->ope, "=") == 0 || strcmp(root->ope, "AND") == 0 || strcmp(root->ope, "OR") == 0)
+        {
+            int tempvar = ++icg_temp;
+            int op0 = generate_code(root->child[0]);
+            int op1 = generate_code(root->child[1]);
+            fprintf(icg_file, "t%d = ", tempvar);
+            if( op0 > 0)
+            {
+                fprintf(icg_file, "t%d", op0);
+            }
+            else
+            {
+                print_code(root->child[0]);
+            }
+            fprintf(icg_file, " %s ", root->ope);
+            if( op1 > 0)
+            {
+                fprintf(icg_file, "t%d", op1);
+            }
+            else
+            {
+                print_code(root->child[1]);
+            }
+            fprintf(icg_file, "\n");
+            return tempvar;
+        }
+        else if( strcmp(root->ope, "NOT") == 0)
+        {
+            int tempvar = ++icg_temp;
+            int op0 = generate_code(root->child[0]);
+            fprintf(icg_file, "t%d = ! ", tempvar);
+            if( op0 > 0)
+            {
+                fprintf(icg_file, "t%d", op0);
+            }
+            else
+            {
+                print_code(root->child[0]);
+            }
+            fprintf(icg_file, "\n");
+            return tempvar;
+        }
+        else if( strcmp(root->ope, "SET_STMT") == 0)
+        {
+            int op1 = generate_code(root->child[1]);
+            print_code(root->child[0]);
+            fprintf(icg_file, " = ");
+            if( op1 > 0)
+            {
+                fprintf(icg_file, "t%d", op1);
+            }
+            else
+            {
+                print_code(root->child[1]);
+            }
+            fprintf(icg_file, "\n");
+        }
+        else if( strcmp(root->ope, "IF_EXP") == 0)
+        {
+            int op1 = generate_code(root->child[0]);
+            fprintf(icg_file, "if ");
+            if( op1 > 0)
+            {
+                fprintf(icg_file, "t%d", op1);
+            }
+            else
+            {
+                print_code(root->child[1]);
+            }
+            fprintf(icg_file, "\n");
+            int branch1 = ++icg_branch;
+            int branch2 = ++icg_branch;
+            int exit = ++icg_exit;
+            fprintf(icg_file, "GOTO L%d\n", branch1);
+            fprintf(icg_file, "GOTO L%d\n", branch2);
+            fprintf(icg_file, "L%d :\n", branch1);
+            generate_code(root->child[1]);
+            fprintf(icg_file, "GOTO EXIT%d\n", exit);
+            fprintf(icg_file, "L%d :\n", branch2);
+            generate_code(root->child[2]);
+            fprintf(icg_file, "EXIT%d :\n", exit);
+        }
+        else if( strcmp(root->ope, "LOOPWHILE_EXP") == 0)
+        {
+            int loop_branch = ++icg_branch;
+            int exit = ++icg_exit;
+            fprintf(icg_file, "L%d :\n", loop_branch);
+            int op1 = generate_code(root->child[0]);
+            fprintf(icg_file, "if ");
+            if( op1 > 0)
+            {
+                fprintf(icg_file, "t%d", op1);
+            }
+            else
+            {
+                print_code(root->child[1]);
+            }
+            fprintf(icg_file, "\n");
+            int statement_branch = ++icg_branch;
+            fprintf(icg_file, "GOTO L%d\n", statement_branch);
+            fprintf(icg_file, "GOTO EXIT%d\n", exit);
+            fprintf(icg_file, "L%d :\n", statement_branch);
+            generate_code(root->child[1]);
+            fprintf(icg_file, "GOTO L%d\n", loop_branch);
+            fprintf(icg_file, "EXIT%d :\n", exit);
+        }
+        else if( strcmp(root->ope, "LOOPFOR_FROM") == 0)
+        {
+            int start_temp_var = ++icg_temp;
+            int end_temp_var = ++icg_temp;
+            int start_num = generate_code(root->child[0]->child[1]->child[0]);
+            fprintf(icg_file, "t%d = ", start_temp_var);
+            if( start_num > 0)
+            {
+                fprintf(icg_file, "t%d", start_num);
+            }
+            else
+            {
+                print_code(root->child[0]->child[1]->child[0]);
+            }
+            fprintf(icg_file, "\n");
+            int end_num = generate_code(root->child[0]->child[1]->child[1]);
+            fprintf(icg_file, "t%d = ", end_temp_var);
+            if( end_num > 0)
+            {
+                fprintf(icg_file, "t%d", end_num);
+            }
+            else
+            {
+                print_code(root->child[0]->child[1]->child[1]);
+            }
+            fprintf(icg_file, "\n");
+            print_code(root->child[0]->child[0]);
+            fprintf(icg_file, " = t%d\n", start_temp_var);
+            int loop_branch = ++icg_branch;
+            int statement_branch = ++icg_branch;
+            int exit = ++icg_exit;
+            fprintf(icg_file, "L%d :\n", loop_branch);
+            fprintf(icg_file, "if ");
+            print_code(root->child[0]->child[0]);
+            fprintf(icg_file, " < t%d\n", end_temp_var);
+            fprintf(icg_file, "GOTO L%d\n", statement_branch);
+            fprintf(icg_file, "GOTO EXIT%d\n", exit);
+            fprintf(icg_file, "L%d :\n", statement_branch);
+            generate_code(root->child[1]);
+            print_code(root->child[0]->child[0]);
+            fprintf(icg_file, " = ");
+            print_code(root->child[0]->child[0]);
+            fprintf(icg_file, " + 1\n");
+            fprintf(icg_file, "GOTO L%d\n", loop_branch);
+            fprintf(icg_file, "EXIT%d :\n", exit);
+        }
+        else
+        {
+            int return_value = generate_code(root->child[0]);
+            for(int i=1 ; i<root->number_of_children ; i++)
+            {
+                generate_code(root->child[i]);
+            }
+            return return_value;
+        }
     }
     return 0;
 }
@@ -672,19 +610,15 @@ void print_code(ASTNode *root)
                 }
                 break;
         case 2:
-                // printf("%s", root->id);
                 fprintf(icg_file, "%s", root->id);
                 break;
         case 3:
-                // printf("%d", root->num_value);
                 fprintf(icg_file, "%d", root->num_value);
                 break;
         case 4:
-                // printf("%d", root->bool_value);
                 fprintf(icg_file, "%d", root->bool_value);
                 break;
         case 5:
-                // printf("%s", root->str_value);
                 fprintf(icg_file, "%s", root->str_value);
                 break;
     }

@@ -104,7 +104,7 @@ struct row
     int type;
 };
 
-struct row symtab[100];
+struct row symtab[256];
 // increment table_pointer after every insertion
 //insert into syntab[table_pointer]
 void insert(char *id)

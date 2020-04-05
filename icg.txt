@@ -1,58 +1,90 @@
-t3 = 2 * 3
-t2 = 3 + t3
-t1 = ! t2
-x = t1
-t4 = x < 10
-if t4
- GOTO L1
- GOTO L2
+print ( 1 )
+print ( 1 )
+print ( 3 )
+print ( 0 )
+t1 = 3 + 2
+gAg = t1
+t2 = 3 + 2
+t3 = 3 * 2
+t4 = 3 - 2
+t5 = 3 / 2
+t6 = 3 % "he2"
+t7 = 3 % x
+t8 = 3 % 1
+t10 = 2 * 3
+t9 = 3 + t10
+print ( "Hello" )
+t13 = 2 * 3
+t12 = 3 + t13
+t11 = ! t12
+print ( 0 )
+t14 = g < 34
+t15 = 2 < 34
+if t15
+GOTO L1
+GOTO L2
 L1 :
-t5 = y < 10
-if t5
- GOTO L3
- GOTO L4
-L3 :
-k = x
- GOTO EXIT2
-L4 :
-k = y
-EXIT2 :
- GOTO EXIT1
+k = 3
+GOTO EXIT1
 L2 :
-t6 = y < 10
-if t6
- GOTO L5
- GOTO L6
-L5 :
-k = y
- GOTO EXIT3
-L6 :
-k = x
-EXIT3 :
+k = 6
 EXIT1 :
-print ( k )
+t16 = 2
+t17 = 6
+x = t16
+L3 :
+if x < t17
+GOTO L4
+GOTO EXIT2
+L4 :
+print ( 2 )
+print ( 4 )
+x = x + 1
+GOTO L3
+EXIT2 :
+t18 = 2
+t19 = variable
+x = t18
+L5 :
+if x < t19
+GOTO L6
+GOTO EXIT3
+L6 :
+print ( 2 )
+print ( 4 )
+x = x + 1
+GOTO L5
+EXIT3 :
 L7 :
-t7 = x < 3
-if t7
- GOTO L8
- GOTO EXIT4
+t20 = x1 < 3
+if t20
+GOTO L8
+GOTO EXIT4
 L8 :
-print ( x )
-t8 = x + 1
-x = t8
- GOTO L7
-EXIT4 :
-print ( x )
-t9 = 2
-t10 = x
-i = t9
-L9 :
-if i < t10
+t21 = 2 < 34
+if t21
+GOTO L9
 GOTO L10
+L9 :
+t22 = 2 < 34
+if t22
+GOTO L11
+GOTO L12
+L11 :
+x2 = 3
+GOTO EXIT6
+L12 :
+x3 = 6
+EXIT6 :
 GOTO EXIT5
 L10 :
-print ( i )
-k = i
-i = i + 1
-GOTO L9
+x4 = 6
 EXIT5 :
+print ( x )
+my-num = 2
+my-bool-t = 1
+my-bool-f = 0
+my-str = "PARTH SHAH"
+print ( x )
+GOTO L7
+EXIT4 :
