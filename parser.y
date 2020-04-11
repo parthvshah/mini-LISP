@@ -529,7 +529,7 @@ int generate_code(ASTNode *root)
             }
             else
             {
-                print_code(root->child[1]);
+                print_code(root->child[0]);
             }
             fprintf(icg_file, "\n");
             int statement_branch = ++icg_branch;
@@ -571,10 +571,12 @@ int generate_code(ASTNode *root)
             int loop_branch = ++icg_branch;
             int statement_branch = ++icg_branch;
             int exit = ++icg_exit;
+            int condition = ++icg_temp;
             fprintf(icg_file, "L%d :\n", loop_branch);
-            fprintf(icg_file, "if ");
+            fprintf(icg_file, "t%d = ", condition);
             print_code(root->child[0]->child[0]);
             fprintf(icg_file, " < t%d\n", end_temp_var);
+            fprintf(icg_file, "if t%d\n", condition);
             fprintf(icg_file, "GOTO L%d\n", statement_branch);
             fprintf(icg_file, "GOTO EXIT%d\n", exit);
             fprintf(icg_file, "L%d :\n", statement_branch);

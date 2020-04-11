@@ -1,12 +1,4 @@
-(setq x (not (+ 3 ( * 2 3 ) )))
-(if (< x 10) (if (< y 10)(setq k x)(setq k y)) (if (< y 10)(setq k y)(setq k x)))
-(print k)
-(loop while (< x 3)
-    (print x)
-    (setq x (+ x 1))
-)
-(print x)
-(loop for i from 2 to x 
-    (print i)
-    (setq k i)
+(loop for x from 2 to 6
+    (print 2)
+    (print 4)
 )
