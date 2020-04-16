@@ -24,7 +24,7 @@
 
 %error-verbose
 
-%token T_START T_END T_IDENTIFIER T_NUMBER T_GOTO T_IFFALSE T_LE_OP T_GE_OP T_MOD_OP T_EQ_OP T_NE_OP T_OR_OP T_AND_OP T_AS_OP
+%token T_IDENTIFIER T_NUMBER T_GOTO T_IFFALSE T_LE_OP T_GE_OP T_MOD_OP T_EQ_OP T_NE_OP T_OR_OP T_AND_OP T_AS_OP
 
 
 %%
@@ -65,11 +65,8 @@ start
 
 													}
 	|T_GOTO T_IDENTIFIER {fprintf(opt,"%s %s\n",$1,$2);}
-	|T_GOTO T_END {fprintf(opt,"%s %s\n",$1,$2);}
 	|T_IFFALSE T_IDENTIFIER T_GOTO T_IDENTIFIER {fprintf(opt,"%s %s %s %s\n",$1,$2,$3,$4);}
-	|T_IDENTIFIER':' {fprintf(opt,"%s:\n",$1);}
-	|T_START {fprintf(opt,"%s\n",$1);}
-	|T_END   {fprintf(opt,"%s\n",$1);}
+	|T_IDENTIFIER":" {fprintf(opt,"%s:\n",$1);}
 	;
 
 opr
