@@ -1,6 +1,18 @@
 #ifndef ASTNODE_HH
 #define ASTNODE_HH
 
+struct row
+{
+    char id[128];
+    int line_no;
+    int scope;
+    int valid_value;
+    int num_value;
+    char bool_value;
+    char *str_value;
+    int type;
+};
+
 class ASTNode{
     public:
     int number_of_children;

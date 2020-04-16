@@ -13,6 +13,7 @@
     extern int my_stack[];
     extern int line_number;
     extern int setting_value;
+    extern struct row symtab[256];
     extern char* ERROR_TOKEN;
     extern void display();
     FILE *icg_file;
@@ -20,6 +21,8 @@
     int icg_line_number, icg_temp, icg_branch, icg_exit;
     int generate_code(ASTNode *);
     void print_code(ASTNode *);
+    void print_id(ASTNode *);
+    int print_id_value(char *);
 
 %}
 %union {
@@ -505,7 +508,7 @@ int generate_code(ASTNode *root)
         else if( strcmp(root->ope, "SET_STMT") == 0 )
         {
             int op1 = generate_code(root->child[1]);
-            print_code(root->child[0]);
+            print_id(root->child[0]);
             fprintf(icg_file, " = ");
             if( op1 > 0)
             {
@@ -638,7 +641,8 @@ void print_code(ASTNode *root)
                 }
                 break;
         case 2:
-                fprintf(icg_file, "%s", root->id);
+                if(!print_id_value(root->id))
+                    fprintf(icg_file, "%s", root->id);
                 break;
         case 3:
                 fprintf(icg_file, "%d", root->num_value);
@@ -652,3 +656,47 @@ void print_code(ASTNode *root)
     }
 }
 
+void print_id(ASTNode *root)
+{
+    switch(root->type)
+    {
+        case 1: 
+                for(int i=0 ; i<root->number_of_children ; i++)
+                {
+                    print_id(root->child[i]);
+                }
+                break;
+        case 2:
+                fprintf(icg_file, "%s", root->id);
+                break;
+    }
+}
+
+int print_id_value(char *id_value)
+{
+    int temp = table_pointer-1;
+    while (temp>=0) 
+    {
+        if(strcmp(symtab[temp].id, id_value) == 0 && symtab[temp].scope == 0)
+        {
+            // fprintf(icg_file, "\nID VALUE FOUND");
+            if(symtab[temp].valid_value == 1)
+            {
+                // fprintf(icg_file, "\nID VALUE \n");
+                switch(symtab[temp].type)
+                {
+                    case 1: fprintf(icg_file, "%d", symtab[temp].num_value);
+                            break;
+                    case 2: fprintf(icg_file, "%c", symtab[temp].bool_value);
+                            break;
+                    case 3: fprintf(icg_file, "%s", symtab[temp].str_value);
+                            break;
+                }
+                return 1;
+            }
+            return 0;
+        }
+        temp--;
+    }
+    return 0;
+}

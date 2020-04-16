@@ -9,6 +9,9 @@
     int line_number;
     int setting_value;
     int currHighest = 0;
+
+    struct row symtab[256];
+
     int top = 0;
     int my_stack[256];
     int loop = 1;
@@ -92,29 +95,17 @@ bool-val   T|F
 .                           { printf("%s\n", yytext); insert(ERROR_TOKEN); }
 %%
 
-struct row
-{
-	char id[128];
-	int line_no;
-	int scope;
-    int valid_value;
-    int num_value;
-    char bool_value;
-    char *str_value;
-    int type;
-};
-
-struct row symtab[256];
-// increment table_pointer after every insertion
-//insert into syntab[table_pointer]
 void insert(char *id)
 {
-    strcpy(symtab[table_pointer].id,id);
-    symtab[table_pointer].line_no = line_number;
-    symtab[table_pointer].scope = get_top();
-    symtab[table_pointer].valid_value = 0;
-    symtab[table_pointer].type = 0;
-    table_pointer++;
+    if(setting_value)
+    {
+        strcpy(symtab[table_pointer].id,id);
+        symtab[table_pointer].line_no = line_number;
+        symtab[table_pointer].scope = get_top();
+        symtab[table_pointer].valid_value = 0;
+        symtab[table_pointer].type = 0;
+        table_pointer++;
+    }
 }
 
 void set_num(char *value)

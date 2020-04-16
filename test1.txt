@@ -1,4 +1,4 @@
-(loop while (and (< a b) (< a c))
-    (print 2)
-    (print 4)
-)
+(setq a 5)
+(setq c (+ a 3))
+(setq b (+ a 3))
+(setq d (+ b 3))
