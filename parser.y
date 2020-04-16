@@ -394,7 +394,7 @@ int generate_code(ASTNode *root)
 {
     if(root->type == 1)
     {       
-        if(strcmp(root->ope, "PRINT_STMT") == 0)
+        if( strcmp(root->ope, "PRINT_STMT") == 0 )
         {
             int op0 = generate_code(root->child[0]);
             fprintf(icg_file, "print ( ");
@@ -408,7 +408,7 @@ int generate_code(ASTNode *root)
             }
             fprintf(icg_file, " )\n");
         }
-        else if( strcmp(root->ope, "+") == 0 || strcmp(root->ope, "-") == 0 || strcmp(root->ope, "*") == 0 || strcmp(root->ope, "/") == 0 || strcmp(root->ope, "%") == 0)
+        else if( strcmp(root->ope, "+") == 0 || strcmp(root->ope, "-") == 0 || strcmp(root->ope, "*") == 0 || strcmp(root->ope, "/") == 0 || strcmp(root->ope, "%") == 0 || strcmp(root->ope, "<") == 0 || strcmp(root->ope, ">") == 0 || strcmp(root->ope, "=") == 0 )
         {
             int tempvar = ++icg_temp;
             int op0 = generate_code(root->child[0]);
@@ -434,7 +434,7 @@ int generate_code(ASTNode *root)
             fprintf(icg_file, "\n");
             return tempvar;
         }
-        else if( strcmp(root->ope, "<") == 0 || strcmp(root->ope, ">") == 0 || strcmp(root->ope, "=") == 0 || strcmp(root->ope, "AND") == 0 || strcmp(root->ope, "OR") == 0)
+        else if( strcmp(root->ope, "AND") == 0 )
         {
             int tempvar = ++icg_temp;
             int op0 = generate_code(root->child[0]);
@@ -448,7 +448,33 @@ int generate_code(ASTNode *root)
             {
                 print_code(root->child[0]);
             }
-            fprintf(icg_file, " %s ", root->ope);
+            fprintf(icg_file, " && ");
+            if( op1 > 0)
+            {
+                fprintf(icg_file, "t%d", op1);
+            }
+            else
+            {
+                print_code(root->child[1]);
+            }
+            fprintf(icg_file, "\n");
+            return tempvar;
+        }
+        else if( strcmp(root->ope, "OR") == 0)
+        {
+            int tempvar = ++icg_temp;
+            int op0 = generate_code(root->child[0]);
+            int op1 = generate_code(root->child[1]);
+            fprintf(icg_file, "t%d = ", tempvar);
+            if( op0 > 0)
+            {
+                fprintf(icg_file, "t%d", op0);
+            }
+            else
+            {
+                print_code(root->child[0]);
+            }
+            fprintf(icg_file, " || ");
             if( op1 > 0)
             {
                 fprintf(icg_file, "t%d", op1);
@@ -476,7 +502,7 @@ int generate_code(ASTNode *root)
             fprintf(icg_file, "\n");
             return tempvar;
         }
-        else if( strcmp(root->ope, "SET_STMT") == 0)
+        else if( strcmp(root->ope, "SET_STMT") == 0 )
         {
             int op1 = generate_code(root->child[1]);
             print_code(root->child[0]);
@@ -491,7 +517,7 @@ int generate_code(ASTNode *root)
             }
             fprintf(icg_file, "\n");
         }
-        else if( strcmp(root->ope, "IF_EXP") == 0)
+        else if( strcmp(root->ope, "IF_EXP") == 0 )
         {
             int op1 = generate_code(root->child[0]);
             fprintf(icg_file, "if ");
@@ -516,7 +542,7 @@ int generate_code(ASTNode *root)
             generate_code(root->child[2]);
             fprintf(icg_file, "EXIT%d :\n", exit);
         }
-        else if( strcmp(root->ope, "LOOPWHILE_EXP") == 0)
+        else if( strcmp(root->ope, "LOOPWHILE_EXP" ) == 0)
         {
             int loop_branch = ++icg_branch;
             int exit = ++icg_exit;
@@ -540,7 +566,7 @@ int generate_code(ASTNode *root)
             fprintf(icg_file, "GOTO L%d\n", loop_branch);
             fprintf(icg_file, "EXIT%d :\n", exit);
         }
-        else if( strcmp(root->ope, "LOOPFOR_FROM") == 0)
+        else if( strcmp(root->ope, "LOOPFOR_FROM") == 0 )
         {
             int start_temp_var = ++icg_temp;
             int end_temp_var = ++icg_temp;
