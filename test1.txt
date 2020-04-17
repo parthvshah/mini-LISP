@@ -5,6 +5,14 @@
 (setq d (+ b 3))
 (setq y 45)
 (setq x 4)
+
+(setq k 0)
+(if (> k 5)
+    (setq k 10)
+    (print k)
+)
+(setq a (+ k 3))
+
 (loop while (< x 3)
     (if (< 2 y)
         #adkfjhfsjdkj
@@ -14,6 +22,6 @@
         )
         (print F)
     )
-    (setq my-str "PARTH SHAH")
+    (setq my-str "PES UNIVERSITY")
     (print my-str)
 )
