@@ -1,16 +1,24 @@
-t3 = 10
-t1 = 2
-t2 = 10
-x = 2
-L1:
-t4 = 1
-if t4 
-GOTO L2
-GOTO EXIT1
-L2:
-t5 = 4
-x = 4
-print ( 4 )
+x = 8
+t3 = 16
+y = 16
+t4 = 24
+z = 24
+print ( 24 )
+x = 7
+t5 = 14
+y = 14
+t6 = 21
+z = 21
+print ( 21 )
 x = 6
-GOTO L1
-EXIT1:
+t7 = 12
+y = 12
+t8 = 18
+z = 18
+print ( 18 )
+x = 5
+t9 = 10
+y = 10
+t10 = 15
+z = 15
+print ( 15 )

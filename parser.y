@@ -21,7 +21,7 @@
     int icg_line_number, icg_temp, icg_branch, icg_exit;
     int generate_code(ASTNode *);
     void print_code(ASTNode *);
-    void loop_unfolder(ASTNode *);
+    void loop_unfolder(ASTNode *, int, int);
     // void print_id(ASTNode *);
     // int print_id_value(char *);
 
@@ -590,8 +590,13 @@ int generate_code(ASTNode *root)
 
             if(start_num == 0 && end_num == 0)
             {
-                // loop_unfolder(root);
-                // return 0 ;
+                if(root->child[0]->child[1]->child[0]->child[0]->child[0]->type == 3 && root->child[0]->child[1]->child[1]->child[0]->child[0]->type == 3)
+                {   
+                    int start = root->child[0]->child[1]->child[0]->child[0]->child[0]->num_value;
+                    int end = root->child[0]->child[1]->child[1]->child[0]->child[0]->num_value;
+                    loop_unfolder(root, start, end);
+                    return 0 ;
+                }
             }
 
             fprintf(icg_file, "t%d = ", start_temp_var);
@@ -629,10 +634,10 @@ int generate_code(ASTNode *root)
             fprintf(icg_file, "GOTO EXIT%d\n", exit);
             fprintf(icg_file, "L%d :\n", statement_branch);
             generate_code(root->child[1]);
+            fprintf(icg_file, "t%d = t%d + 1\n", start_temp_var, start_temp_var);
             print_code(root->child[0]->child[0]);
             fprintf(icg_file, " = ");
-            print_code(root->child[0]->child[0]);
-            fprintf(icg_file, " + 1\n");
+            fprintf(icg_file, "t%d\n", start_temp_var);
             fprintf(icg_file, "GOTO L%d\n", loop_branch);
             fprintf(icg_file, "EXIT%d :\n", exit);
         }
@@ -676,9 +681,28 @@ void print_code(ASTNode *root)
 }
 
 
-void loop_unfolder(ASTNode *root, int base_index)
+void loop_unfolder(ASTNode *root, int start, int end)
 {
-
+    if (start<end)
+    {
+        for( int i=start ; i<end ; i++)
+        {
+            print_code(root->child[0]->child[0]);
+            fprintf(icg_file, " = %d\n", i);
+            generate_code(root->child[1]);
+            fprintf(icg_file, "\n");
+        }
+    }
+    else
+    {
+        for( int i=start ; i>end ; i--)
+        {
+            print_code(root->child[0]->child[0]);
+            fprintf(icg_file, " = %d\n", i);
+            generate_code(root->child[1]);
+            fprintf(icg_file, "\n");
+        }
+    }
 }
 
 // void print_id(ASTNode *root)
