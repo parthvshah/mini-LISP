@@ -17,6 +17,7 @@
 
 	NODE table[100];
 	int top = -1;
+	int stop_prop = 0;
 	void add_or_update(char*,char*);
 	char* getVal(char*);
 	char* calculate(char*,char*,char*);
@@ -35,59 +36,131 @@ supreme_start
 	;
 
 start
-	:T_PRINT T_STRING   {
-									fprintf(opt,"print ( %s )\n",$2);
-								}
-	|T_PRINT T_NUMBER   {
-									fprintf(opt,"print ( %s )\n",$2);
-								}
-	|T_PRINT T_IDENTIFIER   {
-									fprintf(opt,"print ( %s )\n",getVal($2));
-								}
-	|T_IDENTIFIER T_EQUAL T_NOT T_NUMBER  {
-									add_or_update($1,Not($3));
-									fprintf(opt,"%s = ! %s\n",$1,$3);
-								}
-	|T_IDENTIFIER T_EQUAL T_NOT T_IDENTIFIER {
-										add_or_update($1,Not(getVal($3)));
-										fprintf(opt,"%s = ! %s\n",$1,getVal($3));	
-									}
-	|T_IDENTIFIER T_EQUAL T_STRING  {
-									add_or_update($1,$3);
-									fprintf(opt,"%s = %s\n",$1,$3);
-								}
-	|T_IDENTIFIER T_EQUAL T_NUMBER  {
-									add_or_update($1,$3);
-									fprintf(opt,"%s = %s\n",$1,$3);
-								}
-	|T_IDENTIFIER T_EQUAL T_IDENTIFIER {
-										add_or_update($1,getVal($3));
-										fprintf(opt,"%s = %s\n",$1,getVal($3));	
-									}
+	:T_PRINT T_STRING   								{
+															fprintf(opt,"print ( %s )\n",$2);
+														}
+	|T_PRINT T_NUMBER   								{
+															fprintf(opt,"print ( %s )\n",$2);
+														}
+	|T_PRINT T_IDENTIFIER   							{
+															if(stop_prop)
+															{
+																fprintf(opt,"print ( %s )\n",$2);
+															}
+															else
+															{
+																fprintf(opt,"print ( %s )\n",getVal($2));
+															}
+														}
+	|T_IDENTIFIER T_EQUAL T_NOT T_NUMBER 		 		{
+															if(stop_prop)
+															{
+																fprintf(opt,"%s = %s\n",$1,Not($3));
+															}
+															else
+															{
+																add_or_update($1,Not($4));
+																fprintf(opt,"%s = %s\n",$1,Not($3));
+															}
+														}
+	|T_IDENTIFIER T_EQUAL T_NOT T_IDENTIFIER			{
+															if(stop_prop)
+															{
+																fprintf(opt,"%s = ! %s\n",$1,$3);
+															}
+															else
+															{
+																add_or_update($1,Not(getVal($4)));
+																fprintf(opt,"%s = %s\n",$1,Not(getVal($3)));
+															}
+														}
+	|T_IDENTIFIER T_EQUAL T_STRING  					{
+															if(stop_prop)
+															{
+																fprintf(opt,"%s = %s\n",$1,$3);
+															}
+															else
+															{
+																add_or_update($1,$3);
+																fprintf(opt,"%s = %s\n",$1,$3);
+															}
+														}
+	|T_IDENTIFIER T_EQUAL T_NUMBER  					{
+															if(stop_prop)
+															{
+																fprintf(opt,"%s = %s\n",$1,$3);
+															}
+															else
+															{
+																add_or_update($1,$3);
+																fprintf(opt,"%s = %s\n",$1,$3);
+															}
+														}
+	|T_IDENTIFIER T_EQUAL T_IDENTIFIER 					{
+															if(stop_prop)
+															{
+																fprintf(opt,"%s = %s\n",$1,$3);
+															}
+															else
+															{
+																add_or_update($1,getVal($3));
+																fprintf(opt,"%s = %s\n",$1,getVal($3));	
+															}
+														}
 	|T_IDENTIFIER T_EQUAL T_IDENTIFIER opr T_IDENTIFIER {
-														add_or_update($1,calculate($4,getVal($3),getVal($5)));
-														fprintf(opt,"%s = %s\n",$1,calculate($4,getVal($3),getVal($5)));
-
-													}
+															if(stop_prop)
+															{
+																fprintf(opt,"%s = %s %s %s\n",$1,$3,$4,$5);
+															}
+															else
+															{
+																add_or_update($1,calculate($4,getVal($3),getVal($5)));
+																fprintf(opt,"%s = %s\n",$1,calculate($4,getVal($3),getVal($5)));
+															}
+														}
 	|T_IDENTIFIER T_EQUAL T_NUMBER opr T_IDENTIFIER		{
-														add_or_update($1,calculate($4,$3,getVal($5)));
-														fprintf(opt,"%s = %s\n",$1,calculate($4,$3,getVal($5)));
-
-													}
+															if(stop_prop)
+															{
+																fprintf(opt,"%s = %s %s %s\n",$1,$3,$4,$5);
+															}
+															else
+															{
+																add_or_update($1,calculate($4,$3,getVal($5)));
+																fprintf(opt,"%s = %s\n",$1,calculate($4,$3,getVal($5)));
+															}
+														}
 	|T_IDENTIFIER T_EQUAL T_IDENTIFIER opr T_NUMBER		{
-														add_or_update($1,calculate($4,getVal($3),$5));
-														fprintf(opt,"%s = %s\n",$1,calculate($4,getVal($3),$5));
-
-													}
+															if(stop_prop)
+															{
+																fprintf(opt,"%s = %s %s %s\n",$1,$3,$4,$5);
+															}
+															else
+															{
+																add_or_update($1,calculate($4,getVal($3),$5));
+																fprintf(opt,"%s = %s\n",$1,calculate($4,getVal($3),$5));
+															}
+														}
 	|T_IDENTIFIER T_EQUAL T_NUMBER opr T_NUMBER			{	
-														
-														add_or_update($1,calculate($4,$3,$5));
-														fprintf(opt,"%s = %s\n",$1,calculate($4,$3,$5));
-
-													}
-	|T_GOTO T_IDENTIFIER {fprintf(opt,"%s %s\n",$1,$2);}
-	|T_IF T_IDENTIFIER T_GOTO T_IDENTIFIER {fprintf(opt,"%s %s \n%s %s\n",$1,$2,$3,$4);}
-	|T_IDENTIFIER T_COLON {fprintf(opt,"%s:\n",$1);}
+															if(stop_prop)
+															{
+																fprintf(opt,"%s = %s\n",$1,calculate($4,$3,$5));
+															}
+															else
+															{
+																add_or_update($1,calculate($4,$3,$5));
+																fprintf(opt,"%s = %s\n",$1,calculate($4,$3,$5));
+															}
+														}
+	|T_GOTO T_IDENTIFIER 								{
+															fprintf(opt,"%s %s\n",$1,$2);
+														}
+	|T_IF T_IDENTIFIER T_GOTO T_IDENTIFIER 				{
+															stop_prop = 1;
+															fprintf(opt,"%s %s \n%s %s\n",$1,$2,$3,$4);
+														}
+	|T_IDENTIFIER T_COLON 								{
+															fprintf(opt,"%s:\n",$1);
+														}
 	;
 
 opr

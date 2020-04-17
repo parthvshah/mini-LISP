@@ -1,24 +1,52 @@
-x = 8
-t3 = 16
-y = 16
-t4 = 24
-z = 24
-print ( 24 )
-x = 7
-t5 = 14
-y = 14
-t6 = 21
-z = 21
-print ( 21 )
-x = 6
-t7 = 12
-y = 12
-t8 = 18
-z = 18
-print ( 18 )
-x = 5
-t9 = 10
-y = 10
-t10 = 15
-z = 15
-print ( 15 )
+a = 5
+b = 5
+t1 = 8
+c = 8
+t2 = 11
+b = 11
+t3 = 14
+d = 14
+y = 45
+x = 4
+k = 0
+t4 = 0
+if t4 
+GOTO L1
+GOTO L2
+L1:
+k = 10
+GOTO EXIT1
+L2:
+print ( k )
+EXIT1:
+t5 = k + 3
+a = t5
+L3:
+t6 = x < 3
+if t6 
+GOTO L4
+GOTO EXIT2
+L4:
+t7 = 2 < y
+if t7 
+GOTO L5
+GOTO L6
+L5:
+t8 = y < 34
+if t8 
+GOTO L7
+GOTO L8
+L7:
+x = 45
+GOTO EXIT4
+L8:
+x = 34
+EXIT4:
+GOTO EXIT3
+L6:
+print ( 0 )
+EXIT3:
+my-str = "PES UNIVERSITY"
+print ( my-str )
+GOTO L3
+EXIT2:
