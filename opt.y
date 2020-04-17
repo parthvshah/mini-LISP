@@ -181,17 +181,11 @@ opr
 int main()
 {
 opt = fopen("Optimize.txt", "w");
-if(opt==NULL)
-{	
-	printf("\n-----------------------------------\n");
-	printf("Please first create the Intermediate Code\n");
-	printf("-----------------------------------\n\n");
-}
 yyin = fopen("icg.txt","r");
 if(!yyparse())
 {	printf("\n-----------------------------------\n");
-	printf("Intermediate Code Optimized\nPlease check Optimize.txt for the Optimized IC\n");
-	printf("-----------------------------------\n\n");
+	printf("Intermediate Code Optimized\nPlease check Optimize.txt for the Optimized IC");
+	printf("\n-----------------------------------\n\n");
 }
 
 return 1;
