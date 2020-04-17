@@ -1,8 +1,39 @@
 a = 5
 b = 5
-t1 = a + 3
+t1 = 5 + 3
 c = t1
 t2 = c + 3
 b = t2
 t3 = b + 3
 d = t3
+y = 45
+x = 4
+L1 :
+t4 = 4 < 3
+if t4
+GOTO L2
+GOTO EXIT1
+L2 :
+t5 = 2 < 45
+if t5
+GOTO L3
+GOTO L4
+L3 :
+t6 = 45 < 34
+if t6
+GOTO L5
+GOTO L6
+L5 :
+x = 45
+GOTO EXIT3
+L6 :
+x = 34
+EXIT3 :
+GOTO EXIT2
+L4 :
+print ( 0 )
+EXIT2 :
+my-str = "PARTH SHAH"
+print ( my-str )
+GOTO L1
+EXIT1 :

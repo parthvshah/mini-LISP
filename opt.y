@@ -12,7 +12,7 @@
 	typedef struct symbol_table_node
 	{
 		char name[30];
-		char value[30];
+		char value[150];
 	}NODE;
 
 	NODE table[100];
@@ -20,11 +20,12 @@
 	void add_or_update(char*,char*);
 	char* getVal(char*);
 	char* calculate(char*,char*,char*);
+	char* Not(char*);
 %}
 
 %error-verbose
 
-%token T_IDENTIFIER T_NUMBER T_GOTO T_IFFALSE T_LE_OP T_GE_OP T_MOD_OP T_EQ_OP T_NE_OP T_OR_OP T_AND_OP T_AS_OP
+%token T_EQUAL T_NOT T_COLON T_STRING T_PRINT T_IDENTIFIER T_NUMBER T_GOTO T_IF T_EQ_OP T_NE_OP T_OR_OP T_AND_OP T_MOD_OP
 
 
 %%
@@ -34,39 +35,59 @@ supreme_start
 	;
 
 start
-	:T_IDENTIFIER T_AS_OP T_NUMBER  {
-									add_or_update($1,$3);
-									fprintf(opt,"%s := %s\n",$1,$3);
+	:T_PRINT T_STRING   {
+									fprintf(opt,"print ( %s )\n",$2);
 								}
-	|T_IDENTIFIER T_AS_OP T_IDENTIFIER {
-										add_or_update($1,getVal($3));
-										fprintf(opt,"%s := %s\n",$1,getVal($3));	
-
+	|T_PRINT T_NUMBER   {
+									fprintf(opt,"print ( %s )\n",$2);
+								}
+	|T_PRINT T_IDENTIFIER   {
+									fprintf(opt,"print ( %s )\n",getVal($2));
+								}
+	|T_IDENTIFIER T_EQUAL T_NOT T_NUMBER  {
+									add_or_update($1,Not($3));
+									fprintf(opt,"%s = ! %s\n",$1,$3);
+								}
+	|T_IDENTIFIER T_EQUAL T_NOT T_IDENTIFIER {
+										add_or_update($1,Not(getVal($3)));
+										fprintf(opt,"%s = ! %s\n",$1,getVal($3));	
 									}
-	|T_IDENTIFIER T_AS_OP T_IDENTIFIER opr T_IDENTIFIER {
+	|T_IDENTIFIER T_EQUAL T_STRING  {
+									add_or_update($1,$3);
+									fprintf(opt,"%s = %s\n",$1,$3);
+								}
+	|T_IDENTIFIER T_EQUAL T_NUMBER  {
+									add_or_update($1,$3);
+									fprintf(opt,"%s = %s\n",$1,$3);
+								}
+	|T_IDENTIFIER T_EQUAL T_IDENTIFIER {
+										add_or_update($1,getVal($3));
+										fprintf(opt,"%s = %s\n",$1,getVal($3));	
+									}
+	|T_IDENTIFIER T_EQUAL T_IDENTIFIER opr T_IDENTIFIER {
 														add_or_update($1,calculate($4,getVal($3),getVal($5)));
-														fprintf(opt,"%s := %s\n",$1,calculate($4,getVal($3),getVal($5)));
+														fprintf(opt,"%s = %s\n",$1,calculate($4,getVal($3),getVal($5)));
 
 													}
-	|T_IDENTIFIER T_AS_OP T_NUMBER opr T_IDENTIFIER		{
+	|T_IDENTIFIER T_EQUAL T_NUMBER opr T_IDENTIFIER		{
 														add_or_update($1,calculate($4,$3,getVal($5)));
-														fprintf(opt,"%s := %s\n",$1,calculate($4,$3,getVal($5)));
+														fprintf(opt,"%s = %s\n",$1,calculate($4,$3,getVal($5)));
 
 													}
-	|T_IDENTIFIER T_AS_OP T_IDENTIFIER opr T_NUMBER		{
+	|T_IDENTIFIER T_EQUAL T_IDENTIFIER opr T_NUMBER		{
 														add_or_update($1,calculate($4,getVal($3),$5));
-														fprintf(opt,"%s := %s\n",$1,calculate($4,getVal($3),$5));
+														fprintf(opt,"%s = %s\n",$1,calculate($4,getVal($3),$5));
 
 													}
-	|T_IDENTIFIER T_AS_OP T_NUMBER opr T_NUMBER			{	
+	|T_IDENTIFIER T_EQUAL T_NUMBER opr T_NUMBER			{	
 														
 														add_or_update($1,calculate($4,$3,$5));
-														fprintf(opt,"%s := %s\n",$1,calculate($4,$3,$5));
+														fprintf(opt,"%s = %s\n",$1,calculate($4,$3,$5));
 
 													}
 	|T_GOTO T_IDENTIFIER {fprintf(opt,"%s %s\n",$1,$2);}
-	|T_IFFALSE T_IDENTIFIER T_GOTO T_IDENTIFIER {fprintf(opt,"%s %s %s %s\n",$1,$2,$3,$4);}
-	|T_IDENTIFIER":" {fprintf(opt,"%s:\n",$1);}
+	|T_IF T_IDENTIFIER T_GOTO T_IDENTIFIER {fprintf(opt,"%s %s \n%s %s\n",$1,$2,$3,$4);}
+	|T_IDENTIFIER T_COLON {fprintf(opt,"%s:\n",$1);}
 	;
 
 opr
@@ -76,8 +97,6 @@ opr
 	|'/'
 	|'<'
 	|'>'
-	|T_LE_OP 
-	|T_GE_OP
 	|T_MOD_OP
 	|T_EQ_OP
 	|T_NE_OP
@@ -175,11 +194,7 @@ char* calculate(char* opr,char* op1,char* op2)
 		res = oper1 > oper2;
 	if(strcmp(opr,"<")==0)
 		res = oper1 < oper2;
-	if(strcmp(opr,">=")==0)
-		res = oper1 >= oper2;
-	if(strcmp(opr,"<=")==0)
-		res = oper1 <= oper2;
-	if(strcmp(opr,"mod")==0)
+	if(strcmp(opr,"%")==0)
 		res = oper1 % oper2;
 	if(strcmp(opr,"==")==0)
 		res = oper1 == oper2;
@@ -191,6 +206,17 @@ char* calculate(char* opr,char* op1,char* op2)
 		res = oper1 || oper2;
 
 
+	snprintf(result,30*sizeof(char),"%d",res);
+	return result;
+}
+
+char* Not(char* op1)
+{	
+	char* result;
+	result = (char*)malloc(sizeof(char)*30);
+	int oper = atoi(op1);
+	int res;
+	res = (!oper);
 	snprintf(result,30*sizeof(char),"%d",res);
 	return result;
 }

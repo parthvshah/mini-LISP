@@ -1,8 +1,39 @@
-a := 5
-b := 5
-t1 := 8
-c := 8
-t2 := 11
-b := 11
-t3 := 14
-d := 14
+a = 5
+b = 5
+t1 = 8
+c = 8
+t2 = 11
+b = 11
+t3 = 14
+d = 14
+y = 45
+x = 4
+L1:
+t4 = 0
+if t4 
+GOTO L2
+GOTO EXIT1
+L2:
+t5 = 1
+if t5 
+GOTO L3
+GOTO L4
+L3:
+t6 = 0
+if t6 
+GOTO L5
+GOTO L6
+L5:
+x = 45
+GOTO EXIT3
+L6:
+x = 34
+EXIT3:
+GOTO EXIT2
+L4:
+print ( 0 )
+EXIT2:
+my-str = "PARTH SHAH"
+print ( "PARTH SHAH" )
+GOTO L1
+EXIT1:
