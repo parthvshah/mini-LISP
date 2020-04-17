@@ -1,14 +1,15 @@
+t3 = 6 + 4
 t1 = 2
-t2 = 6
+t2 = t3
 x = t1
 L1 :
-t3 = x < t2
-if t3
+t4 = x < t2
+if t4
 GOTO L2
 GOTO EXIT1
 L2 :
-t4 = x * 2
-x = t4
+t5 = x * 2
+x = t5
 print ( x )
 x = x + 1
 GOTO L1

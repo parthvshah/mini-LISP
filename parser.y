@@ -21,6 +21,7 @@
     int icg_line_number, icg_temp, icg_branch, icg_exit;
     int generate_code(ASTNode *);
     void print_code(ASTNode *);
+    void loop_unfolder(ASTNode *);
     // void print_id(ASTNode *);
     // int print_id_value(char *);
 
@@ -301,22 +302,7 @@ FROM                : VARIABLE _from RANGE          {
                                                         $$ = makeNode2(temp, $1, $3);
                                                     } 
                     ;   
-RANGE               : NUM _to NUM                   {
-                                                        char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "RANGE");
-                                                        $$ = makeNode2(temp, $1, $3);
-                                                    } 
-                    | NUM _to VARIABLE              {
-                                                        char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "RANGE");
-                                                        $$ = makeNode2(temp, $1, $3);
-                                                    } 
-                    | VARIABLE _to NUM              {
-                                                        char *temp = (char *)malloc(sizeof(char)*15);
-                                                        strcpy(temp, "RANGE");
-                                                        $$ = makeNode2(temp, $1, $3);
-                                                    } 
-                    | VARIABLE _to VARIABLE         {
+RANGE               : EXP _to EXP                   {
                                                         char *temp = (char *)malloc(sizeof(char)*15);
                                                         strcpy(temp, "RANGE");
                                                         $$ = makeNode2(temp, $1, $3);
@@ -600,6 +586,14 @@ int generate_code(ASTNode *root)
             int start_temp_var = ++icg_temp;
             int end_temp_var = ++icg_temp;
             int start_num = generate_code(root->child[0]->child[1]->child[0]);
+            int end_num = generate_code(root->child[0]->child[1]->child[1]);
+
+            if(start_num == 0 && end_num == 0)
+            {
+                // loop_unfolder(root);
+                // return 0 ;
+            }
+
             fprintf(icg_file, "t%d = ", start_temp_var);
             if( start_num > 0)
             {
@@ -610,7 +604,6 @@ int generate_code(ASTNode *root)
                 print_code(root->child[0]->child[1]->child[0]);
             }
             fprintf(icg_file, "\n");
-            int end_num = generate_code(root->child[0]->child[1]->child[1]);
             fprintf(icg_file, "t%d = ", end_temp_var);
             if( end_num > 0)
             {
@@ -680,6 +673,12 @@ void print_code(ASTNode *root)
                 fprintf(icg_file, "%s", root->str_value);
                 break;
     }
+}
+
+
+void loop_unfolder(ASTNode *root, int base_index)
+{
+
 }
 
 // void print_id(ASTNode *root)

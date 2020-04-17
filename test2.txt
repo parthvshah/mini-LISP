@@ -1,4 +1,4 @@
-(loop for x from 2 to 6
+(loop for x from 2 to (+ 6 4)
     (setq x (* x 2))
     (print x)
 )

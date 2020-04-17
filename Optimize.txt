@@ -1,13 +1,14 @@
+t3 = 10
 t1 = 2
-t2 = 6
+t2 = 10
 x = 2
 L1:
-t3 = 1
-if t3 
+t4 = 1
+if t4 
 GOTO L2
 GOTO EXIT1
 L2:
-t4 = 4
+t5 = 4
 x = 4
 print ( 4 )
 x = 6
