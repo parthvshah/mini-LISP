@@ -1,18 +1,6 @@
-a = 5
-b = 5
-t1 = a + 3
-c = t1
-t2 = a % 3
-c = t2
-t3 = c + 3
-b = t3
-t4 = b + 3
-d = t4
-y = 45
-x = 4
 k = 0
-t5 = k > 5
-if t5
+t1 = k > 5
+if t1
 GOTO L1
 GOTO L2
 L1 :
@@ -21,34 +9,14 @@ GOTO EXIT1
 L2 :
 print ( k )
 EXIT1 :
-t6 = k + 3
-a = t6
-L3 :
-t7 = x < 3
-if t7
+d = 0
+t2 = d > k
+if t2
+GOTO L3
 GOTO L4
+L3 :
+d = 10
 GOTO EXIT2
 L4 :
-t8 = 2 < y
-if t8
-GOTO L5
-GOTO L6
-L5 :
-t9 = y < 34
-if t9
-GOTO L7
-GOTO L8
-L7 :
-x = 45
-GOTO EXIT4
-L8 :
-x = 34
-EXIT4 :
-GOTO EXIT3
-L6 :
-print ( 0 )
-EXIT3 :
-my-str = "PES UNIVERSITY"
-print ( my-str )
-GOTO L3
+print ( d )
 EXIT2 :

@@ -1,5 +1,6 @@
-t5 = 0
-if t5 
+k = 0
+t1 = 0
+if t1 
 GOTO L1
 GOTO L2
 L1:
@@ -8,3 +9,14 @@ GOTO EXIT1
 L2:
 print ( k )
 EXIT1:
+d = 0
+t2 = d > k
+if t2 
+GOTO L3
+GOTO L4
+L3:
+d = 10
+GOTO EXIT2
+L4:
+print ( d )
+EXIT2:

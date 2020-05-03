@@ -20,7 +20,6 @@
     int get_register_value(char *, int);
     int generate_code(ASTNode *);
     int generate_code_operations(ASTNode *, int);
-    void print_code(ASTNode *);
 
 %}
 %union {
@@ -326,7 +325,7 @@ int generate_code_operations(ASTNode *root, int register_value)
 {
     if(root->type == 1)
     {
-        if(strcmp(root->ope, "+") == 0 || strcmp(root->ope, "-") == 0 || strcmp(root->ope, "*") == 0 || strcmp(root->ope, "/") == 0 || strcmp(root->ope, "MOD") == 0)
+        if(strcmp(root->ope, "+") == 0 || strcmp(root->ope, "-") == 0 || strcmp(root->ope, "*") == 0 || strcmp(root->ope, "/") == 0 || strcmp(root->ope, "MOD") == 0 || strcmp(root->ope, "AND") == 0 || strcmp(root->ope, "OR") == 0)
         {
             int op1_reg_id = -1;
             int op2_reg_id = -1;
@@ -345,7 +344,7 @@ int generate_code_operations(ASTNode *root, int register_value)
             if (root->child[1]->child[0]->type == 2)
             {
                 char *op2_id = (char *)malloc(sizeof(char)*50);
-                strcpy(op2_id, root->child[0]->child[0]->id);
+                strcpy(op2_id, root->child[1]->child[0]->id);
                 op2_reg_id = get_register_value(op2_id, 1);
             }
             else
@@ -373,6 +372,14 @@ int generate_code_operations(ASTNode *root, int register_value)
             {
                 fprintf(final_file, "MOD ");
             }
+            else if(strcmp(root->ope, "AND") == 0)
+            {
+                fprintf(final_file, "AND ");
+            }
+            else if(strcmp(root->ope, "OR") == 0)
+            {
+                fprintf(final_file, "OR ");
+            }
             fprintf(final_file, "R%d, ", register_value);
 
             if (root->child[0]->child[0]->type == 2)
@@ -391,7 +398,6 @@ int generate_code_operations(ASTNode *root, int register_value)
             {
                 fprintf(final_file, "#%d\n", op2_value);
             }
-            
         }
         else if(strcmp(root->ope, "NUMBER") == 0 || strcmp(root->ope, "ID") == 0)
         {
@@ -417,29 +423,74 @@ int generate_code_operations(ASTNode *root, int register_value)
                 fprintf(final_file, "#%d\n", op1_value);
             }
         }
-        else if(strcmp(root->ope, "STR") == 0)
-        {
-        }
         else
         {
+            int op1_reg_id = -1;
+            int op2_reg_id = -1;
+            int op1_value = 0;
+            int op2_value = 0;
+            char *temp_name = (char *)malloc(sizeof(char)*10);
+            strcpy(temp_name, "$result");
+            int result_reg = get_register_value(temp_name, 0);
+            if (root->child[0]->child[0]->type == 2)
+            {
+                char *op1_id = (char *)malloc(sizeof(char)*50);
+                strcpy(op1_id, root->child[0]->child[0]->id);
+                op1_reg_id = get_register_value(op1_id, 1);
+            }
+            else
+            {
+                op1_value = root->child[0]->child[0]->num_value;
+            }
+            if (root->child[1]->child[0]->type == 2)
+            {
+                char *op2_id = (char *)malloc(sizeof(char)*50);
+                strcpy(op2_id, root->child[1]->child[0]->id);
+                op2_reg_id = get_register_value(op2_id, 1);
+            }
+            else
+            {
+                op2_value = root->child[1]->child[0]->num_value;
+            }
+
+            fprintf(final_file, "SUB R%d, ", result_reg);
+
+            if (root->child[0]->child[0]->type == 2)
+            {
+                fprintf(final_file, "R%d, ", op1_reg_id);
+            }
+            else
+            {
+                fprintf(final_file, "#%d, ", op1_value);
+            }
+            if (root->child[1]->child[0]->type == 2)
+            {
+                fprintf(final_file, "R%d\n", op2_reg_id);
+            }
+            else
+            {
+                fprintf(final_file, "#%d\n", op2_value);
+            }
+            int if_branch = ++as_branch_number;
+            int exit_branch = ++as_exit_number;
+
             if(strcmp(root->ope, "EQUAL_TO") == 0)
             {
+                fprintf(final_file, "BEQZ R%d ASL%d\n", result_reg, if_branch);
             }
             else if(strcmp(root->ope, "<") == 0)
             {
+                fprintf(final_file, "BLTZ R%d ASL%d\n", result_reg, if_branch);
             }
             else if(strcmp(root->ope, ">") == 0)
             {
+                fprintf(final_file, "BGTZ R%d ASL%d\n", result_reg, if_branch);
             }
-            else if(strcmp(root->ope, "AND") == 0)
-            {
-            }
-            else if(strcmp(root->ope, "OR") == 0)
-            {
-            }
-            else if(strcmp(root->ope, "NOT") == 0)
-            {
-            }
+            fprintf(final_file, "MOV R%d #0\n", register_value);
+            fprintf(final_file, "B ASEXIT%d\n", exit_branch);
+            fprintf(final_file, "ASL%d :\n", if_branch);
+            fprintf(final_file, "MOV R%d #1\n", register_value);
+            fprintf(final_file, "ASEXIT%d :\n", exit_branch);
         }
     }
     return 0;
@@ -470,30 +521,4 @@ int get_register_value(char *id, int is_rhs)
         // printf("MOV %s, R%d\n", register_queue[register_front], register_front);
     }
     return register_front;
-}
-
-void print_code(ASTNode *root)
-{
-    switch(root->type)
-    {
-        case 1: 
-                for(int i=0 ; i<root->number_of_children ; i++)
-                {
-                    print_code(root->child[i]);
-                }
-                break;
-        case 2: 
-                // if(!print_id_value(root->id))
-                fprintf(final_file, "%s", root->id);
-                break;
-        case 3:
-                fprintf(final_file, "%d", root->num_value);
-                break;
-        case 4:
-                fprintf(final_file, "%d", root->bool_value);
-                break;
-        case 5:
-                fprintf(final_file, "%s", root->str_value);
-                break;
-    }
 }
