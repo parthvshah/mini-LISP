@@ -4,7 +4,7 @@
     (print k)
 )
 (setq d 0)
-(if (> d k)
+(if (not (> d k))
     (setq d 10)
     (print d)
 )

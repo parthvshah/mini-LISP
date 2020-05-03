@@ -271,27 +271,20 @@ int generate_code(ASTNode *root)
             char *lhs_id = (char *)malloc(sizeof(char)*50);
             strcpy(lhs_id, root->child[0]->child[0]->id);
             int lhs_reg_id = get_register_value(lhs_id, 0);
-            int op1_reg_id = -1;
-            int op1_value = 0;
-            if (root->child[1]->child[0]->type == 2)
-            {
-                char *op1_id = (char *)malloc(sizeof(char)*50);
-                strcpy(op1_id, root->child[1]->child[0]->id);
-                op1_reg_id = get_register_value(op1_id, 1);
-            }
-            else
-            {
-                op1_value = root->child[1]->child[0]->num_value;
-            }
-            fprintf(final_file, "NOR R%d, ", lhs_reg_id);
-            if (root->child[1]->child[0]->type == 2)
-            {
-                fprintf(final_file, "R%d, R%d\n", op1_reg_id, op1_reg_id);
-            }
-            else
-            {
-                fprintf(final_file, "#%d, #%d\n", op1_value, op1_value);
-            }
+
+            char *op1_id = (char *)malloc(sizeof(char)*50);
+            strcpy(op1_id, root->child[1]->child[0]->id);
+            int op1_reg_id = get_register_value(op1_id, 1);
+            
+            int if_branch = ++as_branch_number;
+            int exit_branch = ++as_exit_number;
+
+            fprintf(final_file, "BEQZ R%d ASL%d\n", op1_reg_id, if_branch);
+            fprintf(final_file, "MOV R%d #0\n", lhs_reg_id);
+            fprintf(final_file, "B ASEXIT%d\n", exit_branch);
+            fprintf(final_file, "ASL%d :\n", if_branch);
+            fprintf(final_file, "MOV R%d #1\n", lhs_reg_id);
+            fprintf(final_file, "ASEXIT%d :\n", exit_branch);
         }
         else if(strcmp(root->ope, "GOTO" ) == 0)
         {

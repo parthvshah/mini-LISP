@@ -54,7 +54,7 @@ start
 														}
 	|T_IDENTIFIER T_EQUAL T_NOT T_IDENTIFIER			{
 															stop_prop = 1;
-															fprintf(opt,"%s = ! %s\n",$1,$3);
+															fprintf(opt,"%s = ! %s\n",$1,$4);
 														}
 	|T_IDENTIFIER T_EQUAL T_STRING  					{
 															if(stop_prop)

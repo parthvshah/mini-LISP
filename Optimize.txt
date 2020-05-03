@@ -10,7 +10,8 @@ L2:
 print ( k )
 EXIT1:
 d = 0
-t2 = d > k
+t4 = d > k
+t2 = ! t4
 if t2 
 GOTO L3
 GOTO L4
