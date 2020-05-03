@@ -52,27 +52,9 @@ start
 																fprintf(opt,"print ( %s )\n",getVal($2));
 															}
 														}
-	|T_IDENTIFIER T_EQUAL T_NOT T_NUMBER 		 		{
-															if(stop_prop)
-															{
-																fprintf(opt,"%s = %s\n",$1,Not($3));
-															}
-															else
-															{
-																add_or_update($1,Not($4));
-																fprintf(opt,"%s = %s\n",$1,Not($3));
-															}
-														}
 	|T_IDENTIFIER T_EQUAL T_NOT T_IDENTIFIER			{
-															if(stop_prop)
-															{
-																fprintf(opt,"%s = ! %s\n",$1,$3);
-															}
-															else
-															{
-																add_or_update($1,Not(getVal($4)));
-																fprintf(opt,"%s = %s\n",$1,Not(getVal($3)));
-															}
+															stop_prop = 1;
+															fprintf(opt,"%s = ! %s\n",$1,$3);
 														}
 	|T_IDENTIFIER T_EQUAL T_STRING  					{
 															if(stop_prop)

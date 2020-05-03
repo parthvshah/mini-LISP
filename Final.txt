@@ -1,0 +1,8 @@
+MOV R0, #0
+BNEZ R0, L1
+B L2
+L1 :
+MOV R1, #10
+B EXIT1
+L2 :
+EXIT1 :

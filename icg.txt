@@ -2,15 +2,17 @@ a = 5
 b = 5
 t1 = a + 3
 c = t1
-t2 = c + 3
-b = t2
-t3 = b + 3
-d = t3
+t2 = a % 3
+c = t2
+t3 = c + 3
+b = t3
+t4 = b + 3
+d = t4
 y = 45
 x = 4
 k = 0
-t4 = k > 5
-if t4
+t5 = k > 5
+if t5
 GOTO L1
 GOTO L2
 L1 :
@@ -19,21 +21,21 @@ GOTO EXIT1
 L2 :
 print ( k )
 EXIT1 :
-t5 = k + 3
-a = t5
+t6 = k + 3
+a = t6
 L3 :
-t6 = x < 3
-if t6
+t7 = x < 3
+if t7
 GOTO L4
 GOTO EXIT2
 L4 :
-t7 = 2 < y
-if t7
+t8 = 2 < y
+if t8
 GOTO L5
 GOTO L6
 L5 :
-t8 = y < 34
-if t8
+t9 = y < 34
+if t9
 GOTO L7
 GOTO L8
 L7 :

@@ -504,7 +504,14 @@ int generate_code(ASTNode *root)
         else if( strcmp(root->ope, "NOT") == 0)
         {
             int tempvar = ++icg_temp;
+            int notvar = ++icg_temp;
             int op0 = generate_code(root->child[0]);
+            if( op0 <= 0)
+            {
+                fprintf(icg_file, "t%d = ", notvar);
+                print_code(root->child[0]);
+                fprintf(icg_file, "\n");
+            }
             fprintf(icg_file, "t%d = ! ", tempvar);
             if( op0 > 0)
             {
@@ -512,7 +519,7 @@ int generate_code(ASTNode *root)
             }
             else
             {
-                print_code(root->child[0]);
+                fprintf(icg_file, "t%d", notvar);
             }
             fprintf(icg_file, "\n");
             return tempvar;

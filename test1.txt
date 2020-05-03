@@ -1,6 +1,7 @@
 (setq a 5)
 (setq b 5)
 (setq c (+ a 3))
+(setq c (mod a 3))
 (setq b (+ c 3))
 (setq d (+ b 3))
 (setq y 45)
