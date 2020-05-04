@@ -19,8 +19,17 @@
     int USE = 12;
     int SHIFT = 1;
     int get_register_value(char *, int);
+    void generate_data(ASTNode *);
     int generate_code(ASTNode *);
     int generate_code_operations(ASTNode *, int);
+
+    struct id_list
+    {
+        char *name;
+        struct id_list *next;
+    };
+    struct id_list *id_list_pointer;
+    int add_id(char *);
 
 %}
 %union {
@@ -208,6 +217,7 @@ int main(int argc, char *argv[]) {
     }
     register_front = -1;
     register_filled = 0;
+    id_list_pointer = NULL;
 	final_file = fopen("Assembly_code.txt", "w");
     if(yyparse()==1)
 	{
@@ -215,10 +225,13 @@ int main(int argc, char *argv[]) {
 	}
 	else
 	{
+        generate_data(ast_root);
+        fprintf(final_file, "\n");
+        generate_code(ast_root);
+        fprintf(final_file, "SWI 0x11");
 		printf("\n-----------------------------------\n");
         printf("Intermediate Code Converted to Assembly Code\nPlease check Assembly_code.txt for the Assembly Code");
         printf("\n-----------------------------------\n\n");
-        generate_code(ast_root);
 	}
 
 	fclose(final_file);
@@ -243,19 +256,20 @@ int generate_code(ASTNode *root)
     {       
         if(strcmp(root->ope, "PRINT") == 0)
         {
-            // fprintf(final_file, "PRINT ");
-            // if (root->child[0]->child[0]->type == 2)
-            // {
-            //     fprintf(final_file, "%s\n", root->child[0]->child[0]->id);
-            // }
-            // else if(root->child[0]->child[0]->type == 3)
-            // {
-            //     fprintf(final_file, "%d\n", root->child[0]->child[0]->num_value);
-            // }
-            // else
-            // {
-            //     fprintf(final_file, "%s\n", root->child[0]->child[0]->str_value);
-            // }
+            if (root->child[0]->child[0]->type == 2)
+            {
+                char *data_reg = (char *)malloc(sizeof(char)*50);
+                strcpy(data_reg, root->child[0]->child[0]->id);
+                int data_reg_id = get_register_value(data_reg, 0);
+                
+                fprintf(final_file, "MOV R0, R%d\n", data_reg_id);
+                fprintf(final_file, "SWI 0x00\n");
+            }
+            else if(root->child[0]->child[0]->type == 3)
+            {   
+                fprintf(final_file, "MOV R0, #%d\n", root->child[0]->child[0]->num_value);
+                fprintf(final_file, "SWI 0x00\n");
+            }
         }
         else if(strcmp(root->ope, "EQ_DT") == 0)
         {
@@ -292,12 +306,12 @@ int generate_code(ASTNode *root)
             int exit_branch = ++as_exit_number;
 
             fprintf(final_file, "SUB R%d R%d #0\n", op1_reg_id, op1_reg_id);
-            fprintf(final_file, "BEQ ASL%d\n", if_branch);
+            fprintf(final_file, "BEQ _ASL%d\n", if_branch);
             fprintf(final_file, "MOV R%d #0\n", lhs_reg_id);
-            fprintf(final_file, "B ASEXIT%d\n", exit_branch);
-            fprintf(final_file, "ASL%d :\n", if_branch);
+            fprintf(final_file, "B _ASEXIT%d\n", exit_branch);
+            fprintf(final_file, "_ASL%d :\n", if_branch);
             fprintf(final_file, "MOV R%d #1\n", lhs_reg_id);
-            fprintf(final_file, "ASEXIT%d :\n", exit_branch);
+            fprintf(final_file, "_ASEXIT%d :\n", exit_branch);
         }
         else if(strcmp(root->ope, "GOTO" ) == 0)
         {
@@ -318,7 +332,7 @@ int generate_code(ASTNode *root)
         else
         {
             int return_value = generate_code(root->child[0]);
-            for(int i=1 ; i<root->number_of_children ; i++)
+            for(int i=0 ; i<root->number_of_children ; i++)
             {
                 generate_code(root->child[i]);
             }
@@ -483,21 +497,21 @@ int generate_code_operations(ASTNode *root, int register_value)
 
             if(strcmp(root->ope, "EQUAL_TO") == 0)
             {
-                fprintf(final_file, "BEQ ASL%d\n", if_branch);
+                fprintf(final_file, "BEQ _ASL%d\n", if_branch);
             }
             else if(strcmp(root->ope, "<") == 0)
             {
-                fprintf(final_file, "BLT ASL%d\n", if_branch);
+                fprintf(final_file, "BLT _ASL%d\n", if_branch);
             }
             else if(strcmp(root->ope, ">") == 0)
             {
-                fprintf(final_file, "BGT ASL%d\n", if_branch);
+                fprintf(final_file, "BGT _ASL%d\n", if_branch);
             }
             fprintf(final_file, "MOV R%d #0\n", register_value);
-            fprintf(final_file, "B ASEXIT%d\n", exit_branch);
-            fprintf(final_file, "ASL%d :\n", if_branch);
+            fprintf(final_file, "B _ASEXIT%d\n", exit_branch);
+            fprintf(final_file, "_ASL%d :\n", if_branch);
             fprintf(final_file, "MOV R%d #1\n", register_value);
-            fprintf(final_file, "ASEXIT%d :\n", exit_branch);
+            fprintf(final_file, "_ASEXIT%d :\n", exit_branch);
         }
     }
     return 0;
@@ -527,4 +541,41 @@ int get_register_value(char *id, int is_rhs)
         fprintf(final_file, "LDR R%d, %s\n", register_front, register_queue[register_front]);
     }
     return register_front+SHIFT;
+}
+
+void generate_data(ASTNode *root)
+{
+    if(root->type == 2)
+    {
+        if(root->id[0] != '_')
+        {
+            if(add_id(root->id))
+            {
+                fprintf(final_file, "%s : .WORD 0\n", root->id);
+            }
+        }
+    }
+    else
+    {
+        for(int i=0 ; i<root->number_of_children ; i++)
+        {
+            generate_data(root->child[i]);
+        }
+    }
+}
+int add_id(char *id)
+{
+    struct id_list* traverser = id_list_pointer;
+    while(traverser != NULL)
+    {
+        if(strcmp(traverser->name, id) == 0)
+            return 0;
+        traverser = traverser->next;
+    }
+    struct id_list* new_id = (id_list *)malloc(sizeof(id_list));
+    new_id->name = (char *)malloc(sizeof(char) * strlen(id));
+    strcpy(new_id->name, id);
+    new_id->next = id_list_pointer;
+    id_list_pointer = new_id;
+    return 1;
 }

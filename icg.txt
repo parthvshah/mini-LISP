@@ -1,12 +1,12 @@
 t1 = 32
 t2 = 4
 x = t1
-L1 :
+_L1 :
 t3 = x > t2
 if t3
-GOTO L2
-GOTO EXIT1
-L2 :
+GOTO _L2
+GOTO _EXIT1
+_L2 :
 t4 = x * 2
 y = t4
 t5 = y + x
@@ -14,5 +14,5 @@ z = t5
 print ( z )
 t1 = t1 - 1
 x = t1
-GOTO L1
-EXIT1 :
+GOTO _L1
+_EXIT1 :

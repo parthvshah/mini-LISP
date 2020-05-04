@@ -368,10 +368,10 @@ int main(int argc, char *argv[]) {
 	else
 	{
         // display();
+        generate_code(ast_root);
 		printf("\n-----------------------------------\n");
         printf("LISP Code Converted to Intermediate Code\nPlease check Icg.txt for the Intermediate Code");
         printf("\n-----------------------------------");
-        generate_code(ast_root);
 	}
 
 	fclose(icg_file);
@@ -557,20 +557,20 @@ int generate_code(ASTNode *root)
             int branch1 = ++icg_branch;
             int branch2 = ++icg_branch;
             int exit = ++icg_exit;
-            fprintf(icg_file, "GOTO L%d\n", branch1);
-            fprintf(icg_file, "GOTO L%d\n", branch2);
-            fprintf(icg_file, "L%d :\n", branch1);
+            fprintf(icg_file, "GOTO _L%d\n", branch1);
+            fprintf(icg_file, "GOTO _L%d\n", branch2);
+            fprintf(icg_file, "_L%d :\n", branch1);
             generate_code(root->child[1]);
-            fprintf(icg_file, "GOTO EXIT%d\n", exit);
-            fprintf(icg_file, "L%d :\n", branch2);
+            fprintf(icg_file, "GOTO _EXIT%d\n", exit);
+            fprintf(icg_file, "_L%d :\n", branch2);
             generate_code(root->child[2]);
-            fprintf(icg_file, "EXIT%d :\n", exit);
+            fprintf(icg_file, "_EXIT%d :\n", exit);
         }
         else if( strcmp(root->ope, "LOOPWHILE_EXP" ) == 0)
         {
             int loop_branch = ++icg_branch;
             int exit = ++icg_exit;
-            fprintf(icg_file, "L%d :\n", loop_branch);
+            fprintf(icg_file, "_L%d :\n", loop_branch);
             int op1 = generate_code(root->child[0]);
             fprintf(icg_file, "if ");
             if( op1 > 0)
@@ -583,12 +583,12 @@ int generate_code(ASTNode *root)
             }
             fprintf(icg_file, "\n");
             int statement_branch = ++icg_branch;
-            fprintf(icg_file, "GOTO L%d\n", statement_branch);
-            fprintf(icg_file, "GOTO EXIT%d\n", exit);
-            fprintf(icg_file, "L%d :\n", statement_branch);
+            fprintf(icg_file, "GOTO _L%d\n", statement_branch);
+            fprintf(icg_file, "GOTO _EXIT%d\n", exit);
+            fprintf(icg_file, "_L%d :\n", statement_branch);
             generate_code(root->child[1]);
-            fprintf(icg_file, "GOTO L%d\n", loop_branch);
-            fprintf(icg_file, "EXIT%d :\n", exit);
+            fprintf(icg_file, "GOTO _L%d\n", loop_branch);
+            fprintf(icg_file, "_EXIT%d :\n", exit);
         }
         else if( strcmp(root->ope, "LOOPFOR_FROM") == 0 )
         {
@@ -641,7 +641,7 @@ int generate_code(ASTNode *root)
             int statement_branch = ++icg_branch;
             int exit = ++icg_exit;
             int condition = ++icg_temp;
-            fprintf(icg_file, "L%d :\n", loop_branch);
+            fprintf(icg_file, "_L%d :\n", loop_branch);
             fprintf(icg_file, "t%d = ", condition);
             print_code(root->child[0]->child[0]);
             if(descending)
@@ -653,9 +653,9 @@ int generate_code(ASTNode *root)
                 fprintf(icg_file, " < t%d\n", end_temp_var);
             }
             fprintf(icg_file, "if t%d\n", condition);
-            fprintf(icg_file, "GOTO L%d\n", statement_branch);
-            fprintf(icg_file, "GOTO EXIT%d\n", exit);
-            fprintf(icg_file, "L%d :\n", statement_branch);
+            fprintf(icg_file, "GOTO _L%d\n", statement_branch);
+            fprintf(icg_file, "GOTO _EXIT%d\n", exit);
+            fprintf(icg_file, "_L%d :\n", statement_branch);
             generate_code(root->child[1]);
             if(descending)
             {
@@ -668,8 +668,8 @@ int generate_code(ASTNode *root)
             print_code(root->child[0]->child[0]);
             fprintf(icg_file, " = ");
             fprintf(icg_file, "t%d\n", start_temp_var);
-            fprintf(icg_file, "GOTO L%d\n", loop_branch);
-            fprintf(icg_file, "EXIT%d :\n", exit);
+            fprintf(icg_file, "GOTO _L%d\n", loop_branch);
+            fprintf(icg_file, "_EXIT%d :\n", exit);
         }
         else
         {
