@@ -17,6 +17,7 @@
     int register_front;
     int register_filled;
     int USE = 12;
+    int SHIFT = 1;
     int get_register_value(char *, int);
     int generate_code(ASTNode *);
     int generate_code_operations(ASTNode *, int);
@@ -228,7 +229,7 @@ int main(int argc, char *argv[]) {
 	register_file = fopen("Register.txt", "w");
     for(int i=0; i<USE; i++)
     {
-        fprintf(register_file, "R%d - %s\n", i+2, register_queue[i]);
+        fprintf(register_file, "R%d - %s\n", i+SHIFT, register_queue[i]);
     }
 	fclose(register_file);
 
@@ -290,7 +291,8 @@ int generate_code(ASTNode *root)
             int if_branch = ++as_branch_number;
             int exit_branch = ++as_exit_number;
 
-            fprintf(final_file, "BEQZ R%d ASL%d\n", op1_reg_id, if_branch);
+            fprintf(final_file, "SUB R%d R%d #0\n", op1_reg_id, op1_reg_id);
+            fprintf(final_file, "BEQ ASL%d\n", if_branch);
             fprintf(final_file, "MOV R%d #0\n", lhs_reg_id);
             fprintf(final_file, "B ASEXIT%d\n", exit_branch);
             fprintf(final_file, "ASL%d :\n", if_branch);
@@ -306,7 +308,8 @@ int generate_code(ASTNode *root)
             char *lhs_id = (char *)malloc(sizeof(char)*50);
             strcpy(lhs_id, root->child[0]->child[0]->id);
             int lhs_reg_id = get_register_value(lhs_id, 0);
-            fprintf(final_file, "BNEZ R%d, %s\n", lhs_reg_id, root->child[1]->child[0]->id);
+            fprintf(final_file, "SUB R%d, R%d, #0\n", lhs_reg_id, lhs_reg_id);
+            fprintf(final_file, "BNE %s\n", root->child[1]->child[0]->id);
         }
         else if(strcmp(root->ope, "BRANCH") == 0)
         {
@@ -480,15 +483,15 @@ int generate_code_operations(ASTNode *root, int register_value)
 
             if(strcmp(root->ope, "EQUAL_TO") == 0)
             {
-                fprintf(final_file, "BEQZ R%d ASL%d\n", result_reg, if_branch);
+                fprintf(final_file, "BEQ ASL%d\n", if_branch);
             }
             else if(strcmp(root->ope, "<") == 0)
             {
-                fprintf(final_file, "BLTZ R%d ASL%d\n", result_reg, if_branch);
+                fprintf(final_file, "BLT ASL%d\n", if_branch);
             }
             else if(strcmp(root->ope, ">") == 0)
             {
-                fprintf(final_file, "BGTZ R%d ASL%d\n", result_reg, if_branch);
+                fprintf(final_file, "BGT ASL%d\n", if_branch);
             }
             fprintf(final_file, "MOV R%d #0\n", register_value);
             fprintf(final_file, "B ASEXIT%d\n", exit_branch);
@@ -506,7 +509,7 @@ int get_register_value(char *id, int is_rhs)
     {
         if(strcmp(id, register_queue[i])==0)
         {
-            return i+2;
+            return i+SHIFT;
         }
     }
     register_front = (register_front+1) % USE;
@@ -521,7 +524,7 @@ int get_register_value(char *id, int is_rhs)
     strcpy(register_queue[register_front], id);
     if(is_rhs)
     {
-        fprintf(final_file, "LOAD R%d, %s\n", register_front, register_queue[register_front]);
+        fprintf(final_file, "LDR R%d, %s\n", register_front, register_queue[register_front]);
     }
-    return register_front+2;
+    return register_front+SHIFT;
 }
