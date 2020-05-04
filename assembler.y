@@ -212,7 +212,6 @@ int main(int argc, char *argv[]) {
     as_exit_number = 0;
     for(int i=0; i<USE; i++)
     {
-
         strcpy(register_queue[i],"");
     }
     register_front = -1;
@@ -332,7 +331,7 @@ int generate_code(ASTNode *root)
         else
         {
             int return_value = generate_code(root->child[0]);
-            for(int i=0 ; i<root->number_of_children ; i++)
+            for(int i=1 ; i<root->number_of_children ; i++)
             {
                 generate_code(root->child[i]);
             }
@@ -527,9 +526,9 @@ int get_register_value(char *id, int is_rhs)
         }
     }
     register_front = (register_front+1) % USE;
-    if(register_filled == 13)
+    if(register_filled == USE)
     {
-        fprintf(final_file, "STR R%d, %s\n", register_front, register_queue[register_front]);
+        fprintf(final_file, "STR R%d, %s\n", register_front+SHIFT, register_queue[register_front]);
     }
     else
     {
@@ -538,7 +537,7 @@ int get_register_value(char *id, int is_rhs)
     strcpy(register_queue[register_front], id);
     if(is_rhs)
     {
-        fprintf(final_file, "LDR R%d, %s\n", register_front, register_queue[register_front]);
+        fprintf(final_file, "LDR R%d, %s\n", register_front+SHIFT, register_queue[register_front]);
     }
     return register_front+SHIFT;
 }
