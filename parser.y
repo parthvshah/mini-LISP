@@ -359,22 +359,24 @@ int main(int argc, char *argv[]) {
     icg_branch = 0;
     icg_exit = 0;
     icg_temp = 0;
-	icg_file = fopen("icg.txt", "w");
+	icg_file = fopen("Icg.txt", "w");
     if(yyparse()==1)
 	{
-        display();
+        // display();
 		printf("Parsing failed\n");
 	}
 	else
 	{
-        display();
-		printf("Parsing completed successfully\n");
+        // display();
+		printf("\n-----------------------------------\n");
+        printf("LISP Code Converted to Intermediate Code\nPlease check Icg.txt for the Intermediate Code");
+        printf("\n-----------------------------------");
         generate_code(ast_root);
 	}
 
 	fclose(icg_file);
-    printf("Printing IC:\n\n");
-	system("cat icg.txt");
+    // printf("Printing IC:\n\n");
+	// system("cat icg.txt");
     printf("\n\n");
     return(0);
 }
@@ -594,15 +596,22 @@ int generate_code(ASTNode *root)
             int end_temp_var = ++icg_temp;
             int start_num = generate_code(root->child[0]->child[1]->child[0]);
             int end_num = generate_code(root->child[0]->child[1]->child[1]);
-
+            int descending = 0;
             if(start_num == 0 && end_num == 0)
             {
                 if(root->child[0]->child[1]->child[0]->child[0]->child[0]->type == 3 && root->child[0]->child[1]->child[1]->child[0]->child[0]->type == 3)
                 {   
                     int start = root->child[0]->child[1]->child[0]->child[0]->child[0]->num_value;
                     int end = root->child[0]->child[1]->child[1]->child[0]->child[0]->num_value;
-                    loop_unfolder(root, start, end);
-                    return 0 ;
+                    if(abs(start - end)<20)
+                    {
+                        loop_unfolder(root, start, end);
+                        return 0 ;
+                    }
+                    if(start > end)
+                    {
+                        descending = 1;
+                    }
                 }
             }
 
@@ -635,13 +644,27 @@ int generate_code(ASTNode *root)
             fprintf(icg_file, "L%d :\n", loop_branch);
             fprintf(icg_file, "t%d = ", condition);
             print_code(root->child[0]->child[0]);
-            fprintf(icg_file, " < t%d\n", end_temp_var);
+            if(descending)
+            {
+                fprintf(icg_file, " > t%d\n", end_temp_var);
+            }
+            else
+            {
+                fprintf(icg_file, " < t%d\n", end_temp_var);
+            }
             fprintf(icg_file, "if t%d\n", condition);
             fprintf(icg_file, "GOTO L%d\n", statement_branch);
             fprintf(icg_file, "GOTO EXIT%d\n", exit);
             fprintf(icg_file, "L%d :\n", statement_branch);
             generate_code(root->child[1]);
-            fprintf(icg_file, "t%d = t%d + 1\n", start_temp_var, start_temp_var);
+            if(descending)
+            {
+                fprintf(icg_file, "t%d = t%d - 1\n", start_temp_var, start_temp_var);
+            }
+            else
+            {
+                fprintf(icg_file, "t%d = t%d + 1\n", start_temp_var, start_temp_var);
+            }
             print_code(root->child[0]->child[0]);
             fprintf(icg_file, " = ");
             fprintf(icg_file, "t%d\n", start_temp_var);

@@ -1,0 +1,12 @@
+R2 - t1
+R3 - t2
+R4 - x
+R5 - t3
+R6 - $result
+R7 - t4
+R8 - y
+R9 - t5
+R10 - z
+R11 - 
+R12 - 
+R13 - 

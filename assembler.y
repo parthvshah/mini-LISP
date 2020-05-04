@@ -16,7 +16,7 @@
     char register_queue[13][128];
     int register_front;
     int register_filled;
-    int USE = 13;
+    int USE = 12;
     int get_register_value(char *, int);
     int generate_code(ASTNode *);
     int generate_code_operations(ASTNode *, int);
@@ -207,20 +207,31 @@ int main(int argc, char *argv[]) {
     }
     register_front = -1;
     register_filled = 0;
-	final_file = fopen("Final.txt", "w");
+	final_file = fopen("Assembly_code.txt", "w");
     if(yyparse()==1)
 	{
 		printf("Parsing failed\n");
 	}
 	else
 	{
-		printf("Parsing completed successfully\n");
+		printf("\n-----------------------------------\n");
+        printf("Intermediate Code Converted to Assembly Code\nPlease check Assembly_code.txt for the Assembly Code");
+        printf("\n-----------------------------------\n\n");
         generate_code(ast_root);
 	}
 
 	fclose(final_file);
     // printf("Printing IC:\n\n");
 	// system("cat Final.txt");
+
+    FILE *register_file;
+	register_file = fopen("Register.txt", "w");
+    for(int i=0; i<USE; i++)
+    {
+        fprintf(register_file, "R%d - %s\n", i+2, register_queue[i]);
+    }
+	fclose(register_file);
+
     printf("\n\n");
     return(0);
 }
@@ -495,7 +506,7 @@ int get_register_value(char *id, int is_rhs)
     {
         if(strcmp(id, register_queue[i])==0)
         {
-            return i;
+            return i+2;
         }
     }
     register_front = (register_front+1) % USE;
@@ -511,7 +522,6 @@ int get_register_value(char *id, int is_rhs)
     if(is_rhs)
     {
         fprintf(final_file, "LOAD R%d, %s\n", register_front, register_queue[register_front]);
-        // printf("MOV %s, R%d\n", register_queue[register_front], register_front);
     }
-    return register_front;
+    return register_front+2;
 }

@@ -1,4 +1,4 @@
-(loop for x from 8 to 4
+(loop for x from 32 to 4
     (setq y (* x 2))
     (setq z (+ y x))
     (print z)

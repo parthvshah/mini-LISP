@@ -1,23 +1,18 @@
-k = 0
-t1 = k > 5
-if t1
-GOTO L1
-GOTO L2
+t1 = 32
+t2 = 4
+x = t1
 L1 :
-k = 10
+t3 = x > t2
+if t3
+GOTO L2
 GOTO EXIT1
 L2 :
-print ( k )
+t4 = x * 2
+y = t4
+t5 = y + x
+z = t5
+print ( z )
+t1 = t1 - 1
+x = t1
+GOTO L1
 EXIT1 :
-d = 0
-t4 = d > k
-t2 = ! t4
-if t2
-GOTO L3
-GOTO L4
-L3 :
-d = 10
-GOTO EXIT2
-L4 :
-print ( d )
-EXIT2 :

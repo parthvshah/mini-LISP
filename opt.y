@@ -141,7 +141,8 @@ start
 															fprintf(opt,"%s %s \n%s %s\n",$1,$2,$3,$4);
 														}
 	|T_IDENTIFIER T_COLON 								{
-															fprintf(opt,"%s:\n",$1);
+															stop_prop = 1;
+															fprintf(opt,"%s :\n",$1);
 														}
 	;
 
@@ -165,9 +166,9 @@ int main()
 opt = fopen("Optimize.txt", "w");
 yyin = fopen("icg.txt","r");
 if(!yyparse())
-{	printf("\n-----------------------------------\n");
+{	printf("-----------------------------------\n");
 	printf("Intermediate Code Optimized\nPlease check Optimize.txt for the Optimized IC");
-	printf("\n-----------------------------------\n\n");
+	printf("\n-----------------------------------\n");
 }
 
 return 1;
