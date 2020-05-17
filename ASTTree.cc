@@ -100,13 +100,23 @@ void preorder_traversal(ASTNode *root)
     switch(root->type)
     {
         case 1: 
-                printf("%s -> ", root->ope);
+                if (strcmp(root->ope, "STMT") == 0 || strcmp(root->ope, "STMTS") == 0 || strcmp(root->ope, "PROGRAM") == 0)
+                {
+                    printf("\n%s -> ", root->ope);
+                }
+                else if (strcmp(root->ope, "EXP") == 0)
+                {
+                    printf("\n\t%s -> ", root->ope);
+                }
+                else
+                {
+                    printf("%s -> ", root->ope);
+                }
+
                 for(int i=0 ; i<root->number_of_children ; i++)
                 {
                     preorder_traversal(root->child[i]);
                 }
-                if (strcmp(root->ope, "EXP") == 0 || strcmp(root->ope, "STMT") == 0 || strcmp(root->ope, "STMTS") == 0 || strcmp(root->ope, "PROGRAM") == 0)
-                printf("\n");
                 break;
         case 2: 
                 printf("%s -> ", root->id);
