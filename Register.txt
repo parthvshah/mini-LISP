@@ -1,12 +1,12 @@
-R1 - t1
-R2 - t2
-R3 - x
-R4 - t3
-R5 - $result
-R6 - t4
-R7 - y
-R8 - t5
-R9 - z
-R10 - 
-R11 - 
+R1 - start1
+R2 - end1
+R3 - start2
+R4 - end2
+R5 - t1
+R6 - $result
+R7 - t2
+R8 - t3
+R9 - result
+R10 - t4
+R11 - t5
 R12 - 

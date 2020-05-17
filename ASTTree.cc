@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "ASTTree.hh"
 
@@ -94,3 +95,30 @@ ASTNode* makeNode3(char *value, ASTNode *c1, ASTNode *c2, ASTNode *c3)
     return new_node;
 }
 
+void preorder_traversal(ASTNode *root)
+{
+    switch(root->type)
+    {
+        case 1: 
+                printf("%s -> ", root->ope);
+                for(int i=0 ; i<root->number_of_children ; i++)
+                {
+                    preorder_traversal(root->child[i]);
+                }
+                if (strcmp(root->ope, "EXP") == 0 || strcmp(root->ope, "STMT") == 0 || strcmp(root->ope, "STMTS") == 0 || strcmp(root->ope, "PROGRAM") == 0)
+                printf("\n");
+                break;
+        case 2: 
+                printf("%s -> ", root->id);
+                break;
+        case 3:
+                printf("%d -> ", root->num_value);
+                break;
+        case 4:
+                printf("%d -> ", root->bool_value);
+                break;
+        case 5:
+                printf("%s -> ", root->str_value);
+                break;
+    }
+}

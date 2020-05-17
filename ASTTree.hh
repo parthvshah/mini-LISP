@@ -41,4 +41,5 @@ ASTNode* makeLeafNode_str(char *n);
 ASTNode* makeNode1(char *value, ASTNode *c1);
 ASTNode* makeNode2(char *value, ASTNode *c1, ASTNode *c2);
 ASTNode* makeNode3(char *value, ASTNode *c1, ASTNode *c2, ASTNode *c3);
+void preorder_traversal(ASTNode *root);
 #endif

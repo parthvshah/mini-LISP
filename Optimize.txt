@@ -1,18 +1,27 @@
-t1 = 32
-t2 = 4
-x = 32
+start1 = 0
+end1 = 10
+start2 = 0
+end2 = 10
 _L1 :
-t3 = x > t2
-if t3 
+t1 = start1 < end1
+if t1 
 GOTO _L2
 GOTO _EXIT1
 _L2 :
-t4 = x * 2
-y = t4
-t5 = y + x
-z = t5
-print ( z )
-t1 = t1 - 1
-x = t1
+_L3 :
+t2 = start2 < end2
+if t2 
+GOTO _L4
+GOTO _EXIT2
+_L4 :
+t3 = start1 + start2
+result = t3
+t4 = start2 + 1
+start2 = t4
+print ( result )
+GOTO _L3
+_EXIT2 :
+t5 = start1 + 1
+start1 = t5
 GOTO _L1
 _EXIT1 :

@@ -1,5 +1,10 @@
-(loop for x from 32 to 4
-    (setq y (* x 2))
-    (setq z (+ y x))
-    (print z)
+(setq base 0)
+(setq max 100)
+(setq sum-greater-than-max F)
+(loop for x from 10 to 1
+    (if (< base max)
+        (setq base (+ base x) )
+        (setq sum-greater-than-max T)
+    )
 )
+(print sum-greater-than-max)
