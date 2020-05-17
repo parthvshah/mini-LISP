@@ -367,7 +367,7 @@ int main(int argc, char *argv[]) {
 	}
 	else
 	{
-        // display();
+        display();
         generate_code(ast_root);
 		printf("\n-----------------------------------\n");
         printf("LISP Code Converted to Intermediate Code\nPlease check Icg.txt for the Intermediate Code");

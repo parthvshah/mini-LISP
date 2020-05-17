@@ -97,15 +97,12 @@ bool-val   T|F
 
 void insert(char *id)
 {
-    if(setting_value)
-    {
         strcpy(symtab[table_pointer].id,id);
         symtab[table_pointer].line_no = line_number;
         symtab[table_pointer].scope = get_top();
         symtab[table_pointer].valid_value = 0;
         symtab[table_pointer].type = 0;
         table_pointer++;
-    }
 }
 
 void set_num(char *value)
