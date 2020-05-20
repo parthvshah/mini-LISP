@@ -321,7 +321,7 @@ int generate_code(ASTNode *root)
             char *lhs_id = (char *)malloc(sizeof(char)*50);
             strcpy(lhs_id, root->child[0]->child[0]->id);
             int lhs_reg_id = get_register_value(lhs_id, 0);
-            fprintf(final_file, "CMP R%d, #0\n" lhs_reg_id);
+            fprintf(final_file, "CMP R%d, #0\n", lhs_reg_id);
             fprintf(final_file, "BNE %s\n", root->child[1]->child[0]->id);
         }
         else if(strcmp(root->ope, "BRANCH") == 0)

@@ -1,52 +1,26 @@
-start1 : .WORD 0
-end1 : .WORD 0
-start2 : .WORD 0
-end2 : .WORD 0
 t1 : .WORD 0
+a : .WORD 0
 t2 : .WORD 0
+b : .WORD 0
+c : .WORD 0
 t3 : .WORD 0
 result : .WORD 0
-t4 : .WORD 0
-t5 : .WORD 0
 
-MOV R1, #0
-MOV R2, #10
-MOV R3, #0
-MOV R4, #10
+MOV R1, #8
+MOV R2, #8
+MOV R3, #18
+MOV R4, #18
+MOV R5, #18
+MOV R6, #1
+CMP R6, #0
+BNE _L1
+B _L2
 _L1 :
-SUB R6, R1, R2
-BLT _ASL1
-MOV R5 #0
-B _ASEXIT1
-_ASL1 :
-MOV R5 #1
-_ASEXIT1 :
-SUB R5, R5, #0
-BNE _L2
+MOV R7, #0
 B _EXIT1
 _L2 :
-_L3 :
-SUB R6, R3, R4
-BLT _ASL2
-MOV R7 #0
-B _ASEXIT2
-_ASL2 :
-MOV R7 #1
-_ASEXIT2 :
-SUB R7, R7, #0
-BNE _L4
-B _EXIT2
-_L4 :
-ADD R8, R1, R3
-MOV R9, R8
-ADD R10, R3, #1
-MOV R3, R10
-MOV R0, R9
-SWI 0x00
-B _L3
-_EXIT2 :
-ADD R11, R1, #1
-MOV R1, R11
-B _L1
+MOV R7, #1
 _EXIT1 :
+MOV R0, R7
+SWI 0x00
 SWI 0x11
