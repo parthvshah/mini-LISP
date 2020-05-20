@@ -304,7 +304,7 @@ int generate_code(ASTNode *root)
             int if_branch = ++as_branch_number;
             int exit_branch = ++as_exit_number;
 
-            fprintf(final_file, "SUB R%d R%d #0\n", op1_reg_id, op1_reg_id);
+            fprintf(final_file, "CMP R%d #0\n", op1_reg_id);
             fprintf(final_file, "BEQ _ASL%d\n", if_branch);
             fprintf(final_file, "MOV R%d #0\n", lhs_reg_id);
             fprintf(final_file, "B _ASEXIT%d\n", exit_branch);
@@ -321,7 +321,7 @@ int generate_code(ASTNode *root)
             char *lhs_id = (char *)malloc(sizeof(char)*50);
             strcpy(lhs_id, root->child[0]->child[0]->id);
             int lhs_reg_id = get_register_value(lhs_id, 0);
-            fprintf(final_file, "SUB R%d, R%d, #0\n", lhs_reg_id, lhs_reg_id);
+            fprintf(final_file, "CMP R%d, #0\n" lhs_reg_id);
             fprintf(final_file, "BNE %s\n", root->child[1]->child[0]->id);
         }
         else if(strcmp(root->ope, "BRANCH") == 0)
@@ -451,7 +451,7 @@ int generate_code_operations(ASTNode *root, int register_value)
             int op2_value = 0;
             char *temp_name = (char *)malloc(sizeof(char)*10);
             strcpy(temp_name, "$result");
-            int result_reg = get_register_value(temp_name, 0);
+            // int result_reg = get_register_value(temp_name, 0);
             if (root->child[0]->child[0]->type == 2)
             {
                 char *op1_id = (char *)malloc(sizeof(char)*50);
@@ -473,7 +473,7 @@ int generate_code_operations(ASTNode *root, int register_value)
                 op2_value = root->child[1]->child[0]->num_value;
             }
 
-            fprintf(final_file, "SUB R%d, ", result_reg);
+            fprintf(final_file, "CMP ");
 
             if (root->child[0]->child[0]->type == 2)
             {
