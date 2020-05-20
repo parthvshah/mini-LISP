@@ -449,9 +449,6 @@ int generate_code_operations(ASTNode *root, int register_value)
             int op2_reg_id = -1;
             int op1_value = 0;
             int op2_value = 0;
-            char *temp_name = (char *)malloc(sizeof(char)*10);
-            strcpy(temp_name, "$result");
-            // int result_reg = get_register_value(temp_name, 0);
             if (root->child[0]->child[0]->type == 2)
             {
                 char *op1_id = (char *)malloc(sizeof(char)*50);
