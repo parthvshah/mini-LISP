@@ -1,3 +1,4 @@
+.data
 t1 : .WORD 0
 a : .WORD 0
 t2 : .WORD 0
@@ -6,6 +7,7 @@ c : .WORD 0
 t3 : .WORD 0
 result : .WORD 0
 
+.text
 MOV R1, #8
 MOV R2, #8
 MOV R3, #18

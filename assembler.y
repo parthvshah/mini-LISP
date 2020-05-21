@@ -219,8 +219,10 @@ int main(int argc, char *argv[]) {
 	}
 	else
 	{
+        fprintf(final_file, ".data\n");
         generate_data(ast_root);
         fprintf(final_file, "\n");
+        fprintf(final_file, ".text\n");
         generate_code(ast_root);
         fprintf(final_file, "SWI 0x11");
 		printf("\n-----------------------------------\n");
