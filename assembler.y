@@ -269,6 +269,17 @@ int generate_code(ASTNode *root)
                 fprintf(final_file, "MOV R0, #%d\n", root->child[0]->child[0]->num_value);
                 fprintf(final_file, "SWI 0x00\n");
             }
+            else if(root->child[0]->child[0]->type == 5)
+            {
+                char* char_value;
+                int string_length = 0;
+                string_length = strlen(root->child[0]->child[0]->str_value);
+                for(int i=1; i<string_length-1 ; i++)
+                {
+                    fprintf(final_file, "LDR R0,'%c'\n", root->child[0]->child[0]->str_value[i]);
+                    fprintf(final_file, "SWI 0x00\n");
+                }
+            }
         }
         else if(strcmp(root->ope, "EQ_DT") == 0)
         {
