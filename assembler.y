@@ -84,11 +84,6 @@ start
                                                 strcpy(temp, "EQ_N_DT");
                                                 $$ = makeNode2(temp, $1, $4);
                                             }
-	|T_IDENTIFIER T_EQUAL T_STRING  		{
-                                                char *temp = (char *)malloc(sizeof(char)*10);
-                                                strcpy(temp, "EQ_STR");
-                                                $$ = makeNode2(temp, $1, $3);
-                                            }
 	|T_IDENTIFIER T_EQUAL DATA_TYPE 		{
                                                 char *temp = (char *)malloc(sizeof(char)*10);
                                                 strcpy(temp, "EQ_DT");
@@ -294,13 +289,6 @@ int generate_code(ASTNode *root)
             strcpy(lhs_id, root->child[0]->child[0]->id);
             int lhs_reg_id = get_register_value(lhs_id, 0);
             generate_code_operations(root->child[1], lhs_reg_id);
-        }
-        else if(strcmp(root->ope, "EQ_STR") == 0)
-        {
-            char *lhs_id = (char *)malloc(sizeof(char)*50);
-            strcpy(lhs_id, root->child[0]->child[0]->id);
-            int lhs_reg_id = get_register_value(lhs_id, 0);
-            // fprintf(final_file, "MOV R%d, %s\n", lhs_reg_id, root->child[1]->child[0]->str_value);
         }
         else if(strcmp(root->ope, "EQ_N_DT") == 0)
         {
