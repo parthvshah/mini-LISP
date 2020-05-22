@@ -8,16 +8,23 @@ t3 : .WORD 0
 result : .WORD 0
 
 .text
+LDR R1, t1
 MOV R1, #8
+LDR R2, a
 MOV R2, #8
+LDR R3, t2
 MOV R3, #18
+LDR R4, b
 MOV R4, #18
+LDR R5, c
 MOV R5, #18
+LDR R6, t3
 MOV R6, #1
 CMP R6, #0
 BNE _L1
 B _L2
 _L1 :
+LDR R7, result
 MOV R7, #0
 B _EXIT1
 _L2 :
