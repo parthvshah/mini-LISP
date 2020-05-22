@@ -533,10 +533,7 @@ int get_register_value(char *id, int is_rhs)
         register_filled += 1;
     }
     strcpy(register_queue[register_front], id);
-    if(is_rhs)
-    {
-        fprintf(final_file, "LDR R%d, %s\n", register_front+SHIFT, register_queue[register_front]);
-    }
+    fprintf(final_file, "LDR R%d, %s\n", register_front+SHIFT, register_queue[register_front]);
     return register_front+SHIFT;
 }
 
